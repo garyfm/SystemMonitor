@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-//#include "Process.h"
+#include "Process.h"
 
 int main() {
     std::cout << "System Montior\n";
@@ -22,7 +22,11 @@ int main() {
         std::cout << "Uptime: " << uptime << " Ideltime: " << idletime << "\n";
     }
 
-    //Process p1 {"/proc/1"};
+    {
+        Process p1 {"/proc/1"};
+        std::cout << "Name\t" << "Pid\t" << "User\t" << "State\t\t" << "Threads\t" << "MEM Usage\t" <<  "Command\t" << "\n";
+        p1.print();
+    }
 
     return 0;
 }

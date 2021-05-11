@@ -1,2 +1,2 @@
 SystemMonitor:
-	g++ -o main.elf main.cpp -std=c++17
+	g++ -g -std=c++17 -o SystemMonitor.elf  main.cpp Process.cpp  
