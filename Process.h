@@ -26,6 +26,7 @@ public:
 
 private:
     std::string pid;
+    std::string uid;
     std::string name;
     std::string user;
     std::string cpu_usage;

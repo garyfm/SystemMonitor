@@ -24,7 +24,7 @@ int main() {
 
     {
         Process p1 {"/proc/1"};
-        std::cout << "Name\t" << "Pid\t" << "User\t" << "State\t\t" << "Threads\t" << "MEM Usage\t" <<  "Command\t" << "\n";
+        std::cout << "Name\t" << "Pid\t" << "User\t" << "State\t\t" << "Threads\t" << "\tMEM Usage\t" <<  "Command\t" << "\n";
         p1.print();
     }
 
