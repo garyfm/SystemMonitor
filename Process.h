@@ -29,11 +29,12 @@ private:
     std::string uid;
     std::string name;
     std::string user;
-    std::string cpu_usage;
     std::string mem_usage;
     std::string num_of_threads;
     std::string state;
-    std::string time;
+    std::string cpu_time;
+    std::string cpu_load_avg;
+    std::string start_time;
     std::string process_path;
     std::string command;
 
