@@ -11,7 +11,8 @@ Process::Process(const std::string& process_path) {
 }
 
 PROCESS_STATUS Process::read(const std::string& process_path) {
-    {
+
+    { // Process status
         std::unordered_map<std::string, std::string> proc_status; 
 
         std::string key;
@@ -21,7 +22,8 @@ PROCESS_STATUS Process::read(const std::string& process_path) {
         if (!process_file.is_open()) {
             return PROCESS_STATUS::FAILED_TO_OPEN_FILE; 
         }
-    
+
+        // TODO: Parse process memembers here rather than using multiple find()'s
         while(std::getline(process_file, key, ':')) {
             std::getline(process_file, value, '\n');
 
@@ -40,15 +42,12 @@ PROCESS_STATUS Process::read(const std::string& process_path) {
         if (mem_usage_found != proc_status.end())
             mem_usage = mem_usage_found->second;
         num_of_threads = proc_status.find("Threads")->second;
-    }
-
-    {
+        
         struct passwd *pws = getpwuid(stoi(uid));
         user = pws->pw_name;
     }
 
-    {
-
+    { // Command and args
         std::ifstream cmdline_file {process_path + "/cmdline", std::ios::binary};
         if (!cmdline_file.is_open()) {
             return PROCESS_STATUS::FAILED_TO_OPEN_FILE; 
@@ -60,7 +59,7 @@ PROCESS_STATUS Process::read(const std::string& process_path) {
         command = line;
     }
 
-    {
+    { //CPU Time 
         std::unordered_map<std::string, std::string> process_sched;     
         std::string key;
         std::string value;
@@ -70,7 +69,7 @@ PROCESS_STATUS Process::read(const std::string& process_path) {
             return PROCESS_STATUS::FAILED_TO_OPEN_FILE; 
         }
 
-        // Skip first two line 
+        // Skip the first two line 
         std::getline(process_sched_file, value);
         std::getline(process_sched_file, value);
         while(std::getline(process_sched_file, key, ':')) {
