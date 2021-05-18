@@ -9,15 +9,8 @@
 
 int main() {
 
-    { // CPU Uptime
-            }
-
-    {
-        //Process p1 {"/proc/1"};
-        //p1.print();
-    }
-
     SystemMonitor system_monitor;
     system_monitor.print();
+
     return 0;
 }

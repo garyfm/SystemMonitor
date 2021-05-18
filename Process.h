@@ -30,6 +30,7 @@ public:
     void print();
 
     std::string process_path;
+    std::string state;
 
 private:
     std::string pid;
@@ -38,7 +39,6 @@ private:
     std::string user;
     std::string mem_usage;
     std::string num_of_threads;
-    std::string state;
     std::string cpu_time;
     std::string cpu_load_avg;
     std::string start_time;

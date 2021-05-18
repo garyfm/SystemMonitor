@@ -3,11 +3,12 @@
 #include <string>
 
 #include "Process.h"
+
 struct process_count_t {
     int total;
     int running;
     int sleeping;
-    int stopped;
+    int idle;
     int zombie;
 };
 
@@ -26,7 +27,7 @@ private:
     std::string mem_usage;
     std::string cpu_usage;
     std::string load;
-    process_count_t process_count;
+    process_count_t process_count = {0};
     int users_count;
 
 };
