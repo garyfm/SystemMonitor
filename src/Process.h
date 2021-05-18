@@ -1,9 +1,14 @@
+#ifndef __PROCESS_H__
+#define __PROCESS_H__
+
 #include <string>
 #include <unordered_map>
+
 enum class PROCESS_STATUS {
     OK,
     ERROR,
     FAILED_TO_OPEN_FILE,
+    FAILED_TO_PARSE_FILE,
 };
 
 enum class PROCESS_FEILD {
@@ -18,11 +23,14 @@ class Process {
 
 public:
     Process(){};
-    Process(const std::string& process_path);
+    Process(std::string process_path);
     ~Process(){/* close the proc file */};
 
-    PROCESS_STATUS read(const std::string& process_path);
+    PROCESS_STATUS read();
     void print();
+
+    std::string process_path;
+    std::string state;
 
 private:
     std::string pid;
@@ -31,12 +39,14 @@ private:
     std::string user;
     std::string mem_usage;
     std::string num_of_threads;
-    std::string state;
     std::string cpu_time;
     std::string cpu_load_avg;
     std::string start_time;
-    std::string process_path;
     std::string command;
 
-    int parse_pid();
+    bool parse_proc_status(); 
+    bool parse_proc_commandline(); 
+    bool parse_proc_sched(); 
 };
+
+#endif /* __PROCESS_H__ */
