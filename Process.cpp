@@ -11,6 +11,13 @@ Process::Process(std::string process_path)
     read();
 }
 
+PROCESS_STATUS Process::read() {
+    if (!parse_proc_status()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
+    if (!parse_proc_commandline()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
+    if (!parse_proc_sched()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
+    return PROCESS_STATUS::OK;
+}
+
 bool Process::parse_proc_status() {
     std::unordered_map<std::string, std::string> proc_status; 
 
@@ -87,14 +94,8 @@ bool Process::parse_proc_sched() {
     return true;
 }
 
-PROCESS_STATUS Process::read() {
-    if (!parse_proc_status()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
-    if (!parse_proc_commandline()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
-    if (!parse_proc_sched()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
-    return PROCESS_STATUS::OK;
-}
+
 
 void Process::print() {
-
     std::cout << name << "\t" << pid << "\t" << user << "\t" << state << "\t" << num_of_threads << "\t" << start_time << "\t" << cpu_time << "\t" << cpu_load_avg << "\t\t" << mem_usage << "\t" <<  command << "\t" << "\n";
 }

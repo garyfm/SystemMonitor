@@ -5,7 +5,7 @@
 #include <vector>
 #include <filesystem>
 
-#include "Process.h"
+#include "SystemMonitor.h"
 
 int main() {
     std::cout << "System Montior\n";
@@ -29,22 +29,7 @@ int main() {
         //p1.print();
     }
 
-    {
-        std::vector<Process> process_list;
-
-        std::filesystem::directory_iterator proc_directory {"/proc"};
-        for (auto directory : std::filesystem::directory_iterator(proc_directory)) {
-
-            bool is_process_direcory = std::filesystem::exists(directory.path().string() + "/cmdline");
-            if (is_process_direcory) {
-                process_list.push_back(Process(directory.path()));
-            }
-        }
-
-        std::cout << "Name\t" << "Pid\t" << "User\t" << "State\t\t" << "Threads\t\t" << "Start Time\t" << "CPU Time\t" << "CPU load\t" << "Mem Usage\t" <<  "Command\t" << "\n";
-        for (auto process : process_list) {
-            process.print();
-        }
-    }
+    SystemMonitor system_monitor;
+    system_monitor.print();
     return 0;
 }

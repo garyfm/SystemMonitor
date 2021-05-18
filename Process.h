@@ -1,3 +1,6 @@
+#ifndef __PROCESS_H__
+#define __PROCESS_H__
+
 #include <string>
 #include <unordered_map>
 
@@ -45,3 +48,5 @@ private:
     bool parse_proc_commandline(); 
     bool parse_proc_sched(); 
 };
+
+#endif /* __PROCESS_H__ */
