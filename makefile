@@ -3,3 +3,8 @@ SystemMonitor:
 
 clean:
 	rm SystemMonitor.elf
+
+run:
+	rm SystemMonitor.elf
+	g++ -g -std=c++17 -o SystemMonitor.elf  main.cpp SystemMonitor.cpp Process.cpp  
+	./SystemMonitor.elf
