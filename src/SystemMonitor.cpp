@@ -46,7 +46,7 @@ bool SystemMonitor::read() {
             else if (process.state == "I (idle)")            
                 process_count.idle++;
             else if (process.state == "Z (zombie)")            
-                process_count.sleeping++;
+                process_count.zombie++;
         }
     }
     return true;
