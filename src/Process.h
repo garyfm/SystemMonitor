@@ -31,8 +31,6 @@ public:
 
     std::string process_path;
     std::string state;
-
-private:
     std::string pid;
     std::string uid;
     std::string name;
@@ -44,6 +42,8 @@ private:
     std::string start_time;
     std::string command;
 
+
+private:
     bool parse_proc_status(); 
     bool parse_proc_commandline(); 
     bool parse_proc_sched(); 

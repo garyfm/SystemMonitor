@@ -18,10 +18,6 @@ public:
     SystemMonitor();
     void print();
     bool read();
-
-private:
-    std::vector<Process> process_list;
-
     std::string uptime;
     std::string idletime;
     std::string mem_usage;
@@ -29,6 +25,10 @@ private:
     std::string load;
     process_count_t process_count = {0};
     int users_count;
+    std::vector<Process> process_list;
 
+private:
+
+    
 };
 #endif /* __SYSTEM_MONITOR_H__ */
