@@ -1,10 +1,12 @@
 SystemMonitor:
-	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp 
+	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp -lncurses
 
 clean:
 	rm SystemMonitor.elf
 
 run:
+ifneq ("$(wildcard ./SystemMonitor.elf)", "")
 	rm SystemMonitor.elf
-	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp 
+endif
+	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp -lncurses
 	./SystemMonitor.elf
