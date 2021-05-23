@@ -88,7 +88,7 @@ bool Process::parse_proc_sched() {
         process_sched.insert({key, value});
     }
     cpu_time = process_sched.find("se.sum_exec_runtime")->second;
-    cpu_load_avg = process_sched.find("se.avg.runnable_avg")->second;
+    cpu_load_avg = process_sched.find("se.avg.runnable_load_avg")->second;
     start_time = process_sched.find("se.exec_start")->second;
 
     return true;
