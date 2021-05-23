@@ -17,7 +17,7 @@
 std::array<std::string, NUM_FIELDS> process_fields = {"Name","Pid", "User", "State", "Threads", "Start Time", "CPU Time", "CPU load", "Mem Usage", "Command"};
 int field_spacing = 0;
 
-static void nc_create_header(const SystemMonitor& system_monitor) {
+static WINDOW *nc_create_header(const SystemMonitor& system_monitor) {
     WINDOW *header_w;
     header_w = newwin(5, COLS, 0, 0);
     box(header_w, 0, 0);
@@ -26,10 +26,7 @@ static void nc_create_header(const SystemMonitor& system_monitor) {
     mvwprintw(header_w, 1, COLS / 2, "System Montior");
     wstandend(header_w);
 
-    mvwprintw(header_w, 2, 1, "Uptime: %s Ideltime: %s", system_monitor.uptime.c_str(), system_monitor.idletime.c_str());
-    mvwprintw(header_w, 3, 1, "Process Count:%d Running:%d Sleeping:%d Idle:%d Zombie: %d" ,  system_monitor.process_count.total, system_monitor.process_count.running, system_monitor.process_count.sleeping, system_monitor.process_count.idle, system_monitor.process_count.zombie);
-
-    wrefresh(header_w);
+    return header_w;
 }
 
 static void nc_create_process_field_names() {
@@ -66,6 +63,11 @@ static int nc_move_curser_to_next_field(WINDOW *win, int field_index, const int 
     field_index++;
 
     return field_index;
+}
+
+static void nc_print_header_info(WINDOW *header_w, const SystemMonitor& system_monitor) {
+    mvwprintw(header_w, 2, 1, "Uptime: %s Ideltime: %s", system_monitor.uptime.c_str(), system_monitor.idletime.c_str());
+    mvwprintw(header_w, 3, 1, "Process Count:%d Running:%d Sleeping:%d Idle:%d Zombie: %d" ,  system_monitor.process_count.total, system_monitor.process_count.running, system_monitor.process_count.sleeping, system_monitor.process_count.idle, system_monitor.process_count.zombie);
 }
 
 static void nc_print_process_info(WINDOW *process_info_w, const Process& process, const int y_pos) {
@@ -122,15 +124,15 @@ int main() {
     SystemMonitor system_monitor;
     
     nc_init();
-    nc_create_header(system_monitor);
+
+    WINDOW *header_w = nc_create_header(system_monitor);
     nc_create_process_field_names();
     
-    WINDOW *process_info_w;
-    process_info_w = newwin(system_monitor.process_count.total, COLS, 7, 1);
+    WINDOW *process_info_w = newwin(system_monitor.process_count.total, COLS, 7, 1);
 
     while (1) {
         system_monitor.update();
-        nc_create_header(system_monitor);
+        nc_print_header_info(header_w, system_monitor);
 
         int y_pos = 1;
         for (auto process : system_monitor.process_list) {
@@ -139,6 +141,7 @@ int main() {
             y_pos++;
         }
     
+        wrefresh(header_w);
         wrefresh(process_info_w);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
