@@ -5,6 +5,8 @@
 #include <string_view>
 #include <vector>
 #include <filesystem>
+#include <chrono>
+#include <thread>
 
 #include "SystemMonitor.h"
 
@@ -126,16 +128,21 @@ int main() {
     WINDOW *process_info_w;
     process_info_w = newwin(system_monitor.process_count.total, COLS, 7, 1);
 
-    int y_pos = 1;
-    for (auto process : system_monitor.process_list) {
-        nc_print_process_info(process_info_w, process, y_pos);
-        wmove(process_info_w, y_pos, 0);
-        y_pos++;
-    }
-    
-    wrefresh(process_info_w);
+    while (1) {
+        system_monitor.update();
+        nc_create_header(system_monitor);
 
-    while (1);
+        int y_pos = 1;
+        for (auto process : system_monitor.process_list) {
+            nc_print_process_info(process_info_w, process, y_pos);
+            wmove(process_info_w, y_pos, 0);
+            y_pos++;
+        }
+    
+        wrefresh(process_info_w);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+
     endwin();
     return 0;
 }

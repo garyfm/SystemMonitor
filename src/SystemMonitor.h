@@ -18,6 +18,7 @@ public:
     SystemMonitor();
     void print();
     bool read();
+    void update();
     std::string uptime;
     std::string idletime;
     std::string mem_usage;

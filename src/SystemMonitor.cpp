@@ -38,6 +38,11 @@ bool SystemMonitor::read() {
     
     {
         process_count.total = process_list.size();
+        process_count.running = 0;
+        process_count.idle = 0;
+        process_count.sleeping = 0;
+        process_count.zombie = 0;
+        
         for (auto &process : process_list) {
             if (process.state == "R (running)")            
                 process_count.running++;
@@ -50,6 +55,21 @@ bool SystemMonitor::read() {
         }
     }
     return true;
+}
+
+void SystemMonitor::update() {
+    read();
+    process_list.clear(); 
+    std::filesystem::directory_iterator proc_directory {"/proc"};
+    for (auto directory : std::filesystem::directory_iterator(proc_directory)) {
+
+        bool is_process_direcory = std::filesystem::exists(directory.path().string() + "/cmdline");
+        if (is_process_direcory) {
+            process_list.push_back(Process(directory.path()));
+        }
+    }
+    read();
+
 }
 
 void SystemMonitor::print() {
