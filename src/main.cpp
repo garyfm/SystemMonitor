@@ -73,34 +73,34 @@ static void nc_print_header_info(WINDOW *header_w, const SystemMonitor& system_m
 static void nc_print_process_info(WINDOW *process_info_w, const Process& process, const int y_pos) {
     int field_index = 0;
 
-    waddstr(process_info_w, process.name.c_str());
+    wprintw(process_info_w, process.name.second.c_str());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.pid.c_str());
+    wprintw(process_info_w, "%d", process.pid.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.user.c_str());
+    wprintw(process_info_w, "%s", process.user.second.c_str());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.state.c_str()), y_pos;
+    wprintw(process_info_w, "%s", process.state.second.c_str());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.num_of_threads.c_str());
+    wprintw(process_info_w, "%d", process.num_of_threads.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.start_time.c_str());
+    wprintw(process_info_w, "%d", process.start_time.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.cpu_time.c_str());
+    wprintw(process_info_w, "%d", process.cpu_time.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.cpu_load_avg.c_str());
+    wprintw(process_info_w, "%d", process.cpu_load_avg.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.mem_usage.c_str());
+    wprintw(process_info_w, "%f", process.mem_usage.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.command.c_str());
+    wprintw(process_info_w, "%s", process.command.second.c_str());
 
 }
 

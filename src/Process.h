@@ -3,6 +3,8 @@
 
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <chrono>
 
 enum class PROCESS_STATUS {
     OK,
@@ -19,28 +21,37 @@ enum class PROCESS_FEILD {
     MEM_USAGE,
 };
 
+enum class PROCESS_STATE {
+    RUNNING,
+    IDLE,
+    SLEEPING,
+    ZOMBIE,
+};
+
 class Process {
 
 public:
     Process(){};
     Process(std::string process_path);
-    ~Process(){/* close the proc file */};
 
     PROCESS_STATUS read();
     void print();
 
     std::string process_path;
-    std::string state;
-    std::string pid;
-    std::string uid;
-    std::string name;
-    std::string user;
-    std::string mem_usage;
-    std::string num_of_threads;
-    std::string cpu_time;
-    std::string cpu_load_avg;
-    std::string start_time;
-    std::string command;
+    //std::pair<std::string, PROCESS_STATE> state;
+    std::pair<std::string, std::string> state;
+    std::pair<std::string, int> pid;
+    std::pair<std::string, int> uid;
+    std::pair<std::string, std::string> name;
+    std::pair<std::string, std::string> user;
+    std::pair<std::string, float> mem_usage;
+    std::pair<std::string, int> cpu_load_avg;
+    std::pair<std::string, int> num_of_threads;
+    //std::pair<std::string, std::chrono::duration> cpu_time;
+    //std::pair<std::string, std::chrono::duration> start_time;
+    std::pair<std::string, float> cpu_time;
+    std::pair<std::string, float> start_time;
+    std::pair<std::string, std::string> command;
 
 
 private:

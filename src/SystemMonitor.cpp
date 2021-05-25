@@ -6,17 +6,8 @@
 #include "SystemMonitor.h"
 
 SystemMonitor::SystemMonitor() {
-
-
-    std::filesystem::directory_iterator proc_directory {"/proc"};
-    for (auto directory : std::filesystem::directory_iterator(proc_directory)) {
-
-        bool is_process_direcory = std::filesystem::exists(directory.path().string() + "/cmdline");
-        if (is_process_direcory) {
-            process_list.push_back(Process(directory.path()));
-        }
-    }
     read();
+    populate_process_list(); 
 }
 
 bool SystemMonitor::read() {
@@ -44,13 +35,13 @@ bool SystemMonitor::read() {
         process_count.zombie = 0;
         
         for (auto &process : process_list) {
-            if (process.state == "R (running)")            
+            if (process.state.second == "R (running)")            
                 process_count.running++;
-            else if (process.state == "S (sleeping)")            
+            else if (process.state.second == "S (sleeping)")            
                 process_count.sleeping++;
-            else if (process.state == "I (idle)")            
+            else if (process.state.second == "I (idle)")            
                 process_count.idle++;
-            else if (process.state == "Z (zombie)")            
+            else if (process.state.second == "Z (zombie)")            
                 process_count.zombie++;
         }
     }
@@ -60,16 +51,20 @@ bool SystemMonitor::read() {
 void SystemMonitor::update() {
     read();
     process_list.clear(); 
-    std::filesystem::directory_iterator proc_directory {"/proc"};
-    for (auto directory : std::filesystem::directory_iterator(proc_directory)) {
+    populate_process_list(); 
+    read();
 
+}
+
+void SystemMonitor::populate_process_list () {
+    std::filesystem::directory_iterator proc_directory {"/proc"};
+
+    for (auto directory : std::filesystem::directory_iterator(proc_directory)) {
         bool is_process_direcory = std::filesystem::exists(directory.path().string() + "/cmdline");
         if (is_process_direcory) {
             process_list.push_back(Process(directory.path()));
         }
     }
-    read();
-
 }
 
 void SystemMonitor::print() {

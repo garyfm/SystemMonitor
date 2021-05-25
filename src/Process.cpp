@@ -38,18 +38,17 @@ bool Process::parse_proc_status() {
         proc_status.insert({key, value});
     }
 
-    name = proc_status.find("Name")->second;
-    pid = proc_status.find("Pid")->second;
-    uid = proc_status.find("Uid")->second;
-    uid = uid.substr(1, uid.find('\t', 1) - 1);
-    state = proc_status.find("State")->second;
+    name = {"Name", proc_status.find("Name")->second};
+    pid = {"Pid", std::stoi(proc_status.find("Pid")->second)};
+    uid = {"Uid", std::stoi(proc_status.find("Uid")->second)};
+    state = {"State", proc_status.find("State")->second};
     auto mem_usage_found = proc_status.find("VmRSS");
     if (mem_usage_found != proc_status.end())
-        mem_usage = mem_usage_found->second;
-    num_of_threads = proc_status.find("Threads")->second;
+        mem_usage = {mem_usage_found->first, std::stof(mem_usage_found->second)};
+    num_of_threads = {"Threads", std::stoi(proc_status.find("Threads")->second)};
     
-    struct passwd *pws = getpwuid(stoi(uid));
-    user = pws->pw_name;
+    struct passwd *pws = getpwuid(uid.second);
+    user = {"Name", pws->pw_name};
     
     return true;
 } 
@@ -64,7 +63,7 @@ bool Process::parse_proc_commandline() {
     getline(cmdline_file, line);
 
     std::replace(line.begin(), line.end(), '\000', ' ');
-    command = line;
+    command = {"Command", line};
 
     return true;
 }
@@ -87,9 +86,9 @@ bool Process::parse_proc_sched() {
         value.erase(std::remove(value.begin(), value.end(), ' '), value.end());
         process_sched.insert({key, value});
     }
-    cpu_time = process_sched.find("se.sum_exec_runtime")->second;
-    cpu_load_avg = process_sched.find("se.avg.runnable_load_avg")->second;
-    start_time = process_sched.find("se.exec_start")->second;
+    cpu_time = {"CPU Time", std::stof(process_sched.find("se.sum_exec_runtime")->second)};
+    start_time = {"Start Time", std::stof(process_sched.find("se.exec_start")->second)};
+    cpu_load_avg = {"CPU Load", std::stoi(process_sched.find("se.avg.runnable_avg")->second)};
 
     return true;
 }
@@ -97,5 +96,5 @@ bool Process::parse_proc_sched() {
 
 
 void Process::print() {
-    std::cout << name << "\t" << pid << "\t" << user << "\t" << state << "\t" << num_of_threads << "\t" << start_time << "\t" << cpu_time << "\t" << cpu_load_avg << "\t\t" << mem_usage << "\t" <<  command << "\t" << "\n";
+    //std::cout << name << "\t" << pid << "\t" << user << "\t" << state << "\t" << num_of_threads << "\t" << start_time << "\t" << cpu_time << "\t" << cpu_load_avg << "\t\t" << mem_usage << "\t" <<  command << "\t" << "\n";
 }
