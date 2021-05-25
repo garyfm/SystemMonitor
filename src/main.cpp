@@ -56,7 +56,7 @@ static int nc_move_curser_to_next_field(WINDOW *win, int field_index, const int 
     }
 
     /* Calulate the sume of the spacing between the 
-     * previous feilds */
+     * previous fields */
     field_pos += field_spacing * (field_index + 1) + 1;
 
     wmove(win, y_pos, field_pos);
@@ -70,38 +70,37 @@ static void nc_print_header_info(WINDOW *header_w, const SystemMonitor& system_m
     mvwprintw(header_w, 3, 1, "Process Count:%d Running:%d Sleeping:%d Idle:%d Zombie: %d" ,  system_monitor.process_count.total, system_monitor.process_count.running, system_monitor.process_count.sleeping, system_monitor.process_count.idle, system_monitor.process_count.zombie);
 }
 
-static void nc_print_process_info(WINDOW *process_info_w, const Process& process, const int y_pos) {
+static void nc_print_process_info(WINDOW *process_info_w, Process& process, const int y_pos) {
     int field_index = 0;
 
-    waddstr(process_info_w, process.name.c_str());
+    wprintw(process_info_w, process.name.second.c_str());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.pid.c_str());
+    wprintw(process_info_w, "%d", process.pid.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.user.c_str());
+    wprintw(process_info_w, "%s", process.user.second.c_str());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.state.c_str()), y_pos;
+    wprintw(process_info_w, "%c", process.print_proc_running_state());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.num_of_threads.c_str());
+    wprintw(process_info_w, "%d", process.num_of_threads.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.start_time.c_str());
+    wprintw(process_info_w, "%d", process.start_time.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.cpu_time.c_str());
+    wprintw(process_info_w, "%d", process.cpu_time.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.cpu_load_avg.c_str());
+    wprintw(process_info_w, "%d", process.cpu_load_avg.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.mem_usage.c_str());
+    wprintw(process_info_w, "%d", process.mem_usage.second);
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    waddstr(process_info_w, process.command.c_str());
-
+    wprintw(process_info_w, "%s", process.command.second.c_str());
 }
 
 static void nc_init() {
@@ -109,6 +108,7 @@ static void nc_init() {
     cbreak();
     keypad(stdscr, TRUE);
     noecho();
+
     int process_field_char_count = 0;
 
     for (auto field_name : process_fields) {
@@ -134,11 +134,12 @@ int main() {
         system_monitor.update();
         nc_print_header_info(header_w, system_monitor);
 
-        int y_pos = 1;
+        int y_pos = 0;
         for (auto process : system_monitor.process_list) {
             nc_print_process_info(process_info_w, process, y_pos);
-            wmove(process_info_w, y_pos, 0);
             y_pos++;
+            wmove(process_info_w, y_pos, 0);
+            wrefresh(process_info_w);
         }
     
         wrefresh(header_w);

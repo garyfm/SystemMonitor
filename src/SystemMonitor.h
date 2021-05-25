@@ -16,9 +16,12 @@ class SystemMonitor {
 
 public:
     SystemMonitor();
-    void print();
     bool read();
     void update();
+    void populate_process_list();
+    
+    void print();
+
     std::string uptime;
     std::string idletime;
     std::string mem_usage;
