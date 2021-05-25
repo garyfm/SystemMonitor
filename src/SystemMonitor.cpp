@@ -35,13 +35,13 @@ bool SystemMonitor::read() {
         process_count.zombie = 0;
         
         for (auto &process : process_list) {
-            if (process.state.second == "R (running)")            
+            if (process.state.second == PROCESS_STATE::RUNNING)            
                 process_count.running++;
-            else if (process.state.second == "S (sleeping)")            
+            else if (process.state.second == PROCESS_STATE::SLEEPING)            
                 process_count.sleeping++;
-            else if (process.state.second == "I (idle)")            
+            else if (process.state.second == PROCESS_STATE::IDLE)            
                 process_count.idle++;
-            else if (process.state.second == "Z (zombie)")            
+            else if (process.state.second == PROCESS_STATE::ZOMBIE)             
                 process_count.zombie++;
         }
     }

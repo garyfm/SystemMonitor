@@ -19,8 +19,6 @@ PROCESS_STATUS Process::read() {
 }
 
 bool Process::parse_proc_status() {
-    std::unordered_map<std::string, std::string> proc_status; 
-
     std::string key;
     std::string value;
 
@@ -28,28 +26,60 @@ bool Process::parse_proc_status() {
     if (!process_file.is_open())
         return false;
 
-    // TODO: Parse process memembers here rather than using multiple find()'s
     while(std::getline(process_file, key, ':')) {
         std::getline(process_file, value, '\n');
 
-        if (key != "Uid")
-            value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+        auto valid_key = process_info_fields.find(key);
+        if (valid_key == process_info_fields.end())
+            continue;
 
-        proc_status.insert({key, value});
+        switch (process_info_fields[key]) {
+            case PROCESS_FIELD::NAME:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                name = {key, value};
+                break;
+            case PROCESS_FIELD::PID:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                pid = {key, std::stoi(value)};
+                break;
+            case PROCESS_FIELD::UID: {
+                struct passwd *pws = getpwuid(std::stoi(value));
+                user = {key, pws->pw_name};
+                break;
+            }
+            case PROCESS_FIELD::STATE:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                state = {key, parse_proc_running_state(value)};
+                break;
+            case PROCESS_FIELD::THREADS:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                num_of_threads = {key, std::stoi(value)};
+                break;
+            case PROCESS_FIELD::START_TIME:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                start_time = {key, std::stoi(value)};
+                break;
+            case PROCESS_FIELD::CPU_TIME:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                cpu_time = {key, std::stoi(value)};
+                break;
+            case PROCESS_FIELD::CPU_LOAD:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                cpu_load_avg = {key, std::stoi(value)};
+                break;
+            case PROCESS_FIELD::MEM_USAGE:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                mem_usage = {key, std::stoi(value)};
+                break;
+            case PROCESS_FIELD::COMMAND:
+                value.erase(std::remove(value.begin(), value.end(), '\t'), value.end());
+                command = {key, value};
+                break;
+            default:
+                break;
+        }
     }
 
-    name = {"Name", proc_status.find("Name")->second};
-    pid = {"Pid", std::stoi(proc_status.find("Pid")->second)};
-    uid = {"Uid", std::stoi(proc_status.find("Uid")->second)};
-    state = {"State", proc_status.find("State")->second};
-    auto mem_usage_found = proc_status.find("VmRSS");
-    if (mem_usage_found != proc_status.end())
-        mem_usage = {mem_usage_found->first, std::stof(mem_usage_found->second)};
-    num_of_threads = {"Threads", std::stoi(proc_status.find("Threads")->second)};
-    
-    struct passwd *pws = getpwuid(uid.second);
-    user = {"Name", pws->pw_name};
-    
     return true;
 } 
 
@@ -69,7 +99,6 @@ bool Process::parse_proc_commandline() {
 }
 
 bool Process::parse_proc_sched() {
-    std::unordered_map<std::string, std::string> process_sched;     
     std::string key;
     std::string value;
 
@@ -80,19 +109,52 @@ bool Process::parse_proc_sched() {
     // Skip the first two line 
     std::getline(process_sched_file, value);
     std::getline(process_sched_file, value);
+
     while(std::getline(process_sched_file, key, ':')) {
         std::getline(process_sched_file, value, '\n');
         key.erase(std::remove(key.begin(), key.end(), ' '), key.end());
         value.erase(std::remove(value.begin(), value.end(), ' '), value.end());
-        process_sched.insert({key, value});
+
+        auto valid_key = process_info_fields.find(key);
+        if (valid_key == process_info_fields.end())
+            continue;
+
+        switch (process_info_fields[key]) {
+            case PROCESS_FIELD::CPU_TIME:
+                cpu_time = {"CPU Time", std::stoi(value)};
+                break;
+            case PROCESS_FIELD::START_TIME:
+                start_time = {"Start Time", std::stoi(value)};
+                break;
+            case PROCESS_FIELD::CPU_LOAD:
+                cpu_load_avg = {"CPU Load", std::stoi(value)};
+                break;
+            default:
+                break;
+        }
+
     }
-    cpu_time = {"CPU Time", std::stof(process_sched.find("se.sum_exec_runtime")->second)};
-    start_time = {"Start Time", std::stof(process_sched.find("se.exec_start")->second)};
-    cpu_load_avg = {"CPU Load", std::stoi(process_sched.find("se.avg.runnable_avg")->second)};
 
     return true;
 }
 
+PROCESS_STATE Process::parse_proc_running_state(const std::string& raw_state_string) {
+    if (raw_state_string == "R (running)") return PROCESS_STATE::RUNNING;
+    else if (raw_state_string == "I (idle)") return PROCESS_STATE::IDLE;
+    else if (raw_state_string == "S (sleeping)") return PROCESS_STATE::SLEEPING;
+    else if (raw_state_string == "Z (zombie)") return PROCESS_STATE::ZOMBIE;
+
+    return PROCESS_STATE::END;
+}
+
+char Process::print_proc_running_state() {
+    if (state.second == PROCESS_STATE::RUNNING) return 'R';
+    else if (state.second == PROCESS_STATE::IDLE) return 'I';
+    else if (state.second == PROCESS_STATE::SLEEPING) return 'S';
+    else if (state.second == PROCESS_STATE::ZOMBIE) return 'Z';
+
+    return 'X'; // TODO: Better way of handling this 
+}
 
 
 void Process::print() {
