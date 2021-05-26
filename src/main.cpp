@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <chrono>
 #include <thread>
+#include <mutex>
 
 #include "SystemMonitor.h"
 
@@ -15,7 +16,20 @@
 #define NUM_FIELDS (10)
 
 std::array<std::string, NUM_FIELDS> process_fields = {"Name","Pid", "User", "State", "Threads", "Start Time", "CPU Time", "CPU load", "Mem Usage", "Command"};
-int field_spacing = 0;
+
+std::mutex curser_lock;
+
+static int field_spacing = 0;
+int g_curser_x, g_curser_y;
+
+static char get_proc_running_state(const PROCESS_STATE state) {
+    if (state == PROCESS_STATE::RUNNING) return 'R';
+    else if (state == PROCESS_STATE::IDLE) return 'I';
+    else if (state == PROCESS_STATE::SLEEPING) return 'S';
+    else if (state == PROCESS_STATE::ZOMBIE) return 'Z';
+
+    return 'X'; // TODO: Better way of handling this 
+}
 
 static WINDOW *nc_create_header(const SystemMonitor& system_monitor) {
     WINDOW *header_w;
@@ -82,7 +96,7 @@ static void nc_print_process_info(WINDOW *process_info_w, Process& process, cons
     wprintw(process_info_w, "%s", process.user.second.c_str());
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
-    wprintw(process_info_w, "%c", process.print_proc_running_state());
+    wprintw(process_info_w, "%c", get_proc_running_state(process.state.second));
 
     field_index = nc_move_curser_to_next_field(process_info_w, field_index, y_pos);
     wprintw(process_info_w, "%d", process.num_of_threads.second);
@@ -105,6 +119,7 @@ static void nc_print_process_info(WINDOW *process_info_w, Process& process, cons
 
 static void nc_init() {
     initscr();
+    clear();
     cbreak();
     keypad(stdscr, TRUE);
     noecho();
@@ -118,6 +133,34 @@ static void nc_init() {
     field_spacing = (COLS - process_field_char_count) / NUM_FIELDS; 
 }
 
+void system_monitor_update(SystemMonitor& system_monitor, WINDOW* header_w, WINDOW* process_info_w) {
+
+    while(1) {
+        curser_lock.lock();
+        getyx(process_info_w , g_curser_y, g_curser_x);
+        curser_lock.unlock();
+
+        system_monitor.update();
+        nc_print_header_info(header_w, system_monitor);
+
+        int y_pos = 0;
+        curser_lock.lock();
+        wmove(process_info_w, 0, 0);
+        for (auto process : system_monitor.process_list) {
+            nc_print_process_info(process_info_w, process, y_pos);
+            y_pos++;
+            wmove(process_info_w, y_pos, 0);
+            wrefresh(process_info_w);
+        }
+        wmove(process_info_w, g_curser_y, g_curser_x);
+        curser_lock.unlock();
+
+        wrefresh(header_w);
+        wrefresh(process_info_w);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
 int main() {
     
     
@@ -129,25 +172,36 @@ int main() {
     nc_create_process_field_names();
     
     WINDOW *process_info_w = newwin(system_monitor.process_count.total, COLS, 7, 1);
+    keypad(process_info_w, TRUE);
+
+    std::thread system_monitor_thread { system_monitor_update, std::ref(system_monitor), header_w, process_info_w};
 
     while (1) {
-        system_monitor.update();
-        nc_print_header_info(header_w, system_monitor);
-
-        int y_pos = 0;
-        for (auto process : system_monitor.process_list) {
-            nc_print_process_info(process_info_w, process, y_pos);
-            y_pos++;
-            wmove(process_info_w, y_pos, 0);
-            wrefresh(process_info_w);
+        int key;
+        getyx(process_info_w , g_curser_y, g_curser_x);
+        key = wgetch(process_info_w);
+        curser_lock.lock();
+        switch (key) {
+        case KEY_UP:
+            wmove(process_info_w, --g_curser_y, g_curser_x);
+            break;
+        case KEY_DOWN:
+            wmove(process_info_w, ++g_curser_y, g_curser_x);
+            break;
+        case KEY_RIGHT:
+            wmove(process_info_w, g_curser_y, ++g_curser_x);
+            break;
+        case KEY_LEFT:
+            wmove(process_info_w, g_curser_y, --g_curser_x);
+            break;
+        default:
+            //endwin();
+            break;
         }
-    
-        wrefresh(header_w);
         wrefresh(process_info_w);
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        curser_lock.unlock();
     }
 
-    endwin();
     return 0;
 }
 

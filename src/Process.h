@@ -42,7 +42,6 @@ public:
     Process(std::string process_path);
 
     PROCESS_STATUS read();
-    char print_proc_running_state();
 
     void print();
 
@@ -59,14 +58,11 @@ public:
     std::pair<std::string, int> start_time;
     std::pair<std::string, std::string> command;
 
-    std::map<std::string, PROCESS_FIELD> process_info_fields = {{"Name", PROCESS_FIELD::NAME}, {"Pid", PROCESS_FIELD::PID}, {"Uid", PROCESS_FIELD::UID}, {"State", PROCESS_FIELD::STATE}, {"Threads", PROCESS_FIELD::THREADS}, {"se.exec_start", PROCESS_FIELD::START_TIME}, {"se.sum_exec_runtime", PROCESS_FIELD::CPU_TIME}, {"se.avg.runnable_avg", PROCESS_FIELD::CPU_LOAD}, {"VmRSS", PROCESS_FIELD::MEM_USAGE}, {"Command", PROCESS_FIELD::COMMAND}};
 
 private:
     bool parse_proc_status(); 
     bool parse_proc_commandline(); 
     bool parse_proc_sched(); 
-    PROCESS_STATE parse_proc_running_state(const std::string& state); 
-
 };
 
 #endif /* __PROCESS_H__ */
