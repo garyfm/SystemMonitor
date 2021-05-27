@@ -21,6 +21,7 @@ std::mutex curser_lock;
 
 static int field_spacing = 0;
 int input_curser_x, input_curser_y;
+int pad_y = 0;
 
 static char get_proc_running_state(const PROCESS_STATE state) {
     if (state == PROCESS_STATE::RUNNING) return 'R';
@@ -39,6 +40,7 @@ static WINDOW *nc_create_header(const SystemMonitor& system_monitor) {
     wattron(header_w, A_BOLD | A_UNDERLINE);
     mvwprintw(header_w, 1, COLS / 2, "System Montior");
     wstandend(header_w);
+    wrefresh(header_w);
 
     return header_w;
 }
@@ -172,7 +174,7 @@ void system_monitor_update(SystemMonitor& system_monitor, WINDOW* header_w, WIND
         curser_lock.unlock();
 
         wrefresh(header_w);
-        wrefresh(process_info_w);
+        prefresh(process_info_w, pad_y, 0, 7, 1, LINES -1, COLS - 1);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
@@ -188,24 +190,29 @@ int main() {
     WINDOW *header_w = nc_create_header(system_monitor);
     nc_create_process_field_names();
     
-    WINDOW *process_info_w = newwin(system_monitor.process_count.total, COLS, 7, 1);
+    WINDOW *process_info_w = newpad(system_monitor.process_count.total, COLS);
     keypad(process_info_w, TRUE);
 
     std::thread system_monitor_thread { system_monitor_update, std::ref(system_monitor), header_w, process_info_w};
+
     int field_index = 0;
     while (1) {
         int key; 
-        getyx(process_info_w , input_curser_y, input_curser_x);
         key = wgetch(process_info_w);
 
         curser_lock.lock();
+        getyx(process_info_w , input_curser_y, input_curser_x);
         switch (key) {
         case KEY_UP:
+            if (input_curser_y <= pad_y)
+                pad_y--;
             // Move up so clear current line highlighing
             mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
             wmove(process_info_w, --input_curser_y, input_curser_x);
             break;
         case KEY_DOWN:
+            if (input_curser_y >= LINES - 8)
+                pad_y++;
             // Move down so clear current line highlighing
             mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
             wmove(process_info_w, ++input_curser_y, input_curser_x);
@@ -221,7 +228,8 @@ int main() {
         default:
             break;
         }
-        wrefresh(process_info_w);
+
+        prefresh(process_info_w, pad_y, 0, 7, 1, LINES -1, COLS - 1);
         curser_lock.unlock();
     }
 

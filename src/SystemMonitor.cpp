@@ -6,8 +6,8 @@
 #include "SystemMonitor.h"
 
 SystemMonitor::SystemMonitor() {
-    read();
     populate_process_list(); 
+    read();
 }
 
 bool SystemMonitor::read() {
@@ -49,7 +49,6 @@ bool SystemMonitor::read() {
 }
 
 void SystemMonitor::update() {
-    read();
     process_list.clear(); 
     populate_process_list(); 
     read();
