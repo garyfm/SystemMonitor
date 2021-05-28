@@ -14,13 +14,15 @@
 #include <ncurses.h>
 
 #define NUM_FIELDS (10)
+#define START_OF_PROCESS_INFO_ROW (7)
 
 std::array<std::string, NUM_FIELDS> process_field_names = {"Name","Pid", "User", "State", "Threads", "Start Time", "CPU Time", "CPU load", "Mem Usage", "Command"};
 
 std::mutex curser_lock;
 
 static int field_spacing = 0;
-int input_curser_x, input_curser_y;
+static int input_curser_x, input_curser_y;
+static int pad_y = 0;
 
 static char get_proc_running_state(const PROCESS_STATE state) {
     if (state == PROCESS_STATE::RUNNING) return 'R';
@@ -39,6 +41,7 @@ static WINDOW *nc_create_header(const SystemMonitor& system_monitor) {
     wattron(header_w, A_BOLD | A_UNDERLINE);
     mvwprintw(header_w, 1, COLS / 2, "System Montior");
     wstandend(header_w);
+    wrefresh(header_w);
 
     return header_w;
 }
@@ -172,14 +175,15 @@ void system_monitor_update(SystemMonitor& system_monitor, WINDOW* header_w, WIND
         curser_lock.unlock();
 
         wrefresh(header_w);
-        wrefresh(process_info_w);
+        prefresh(process_info_w, pad_y, 0, START_OF_PROCESS_INFO_ROW, 1, LINES -1, COLS - 1);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
 int main() {
-    
+    int field_index = 0;
+    int key; 
     
     SystemMonitor system_monitor;
     
@@ -188,28 +192,35 @@ int main() {
     WINDOW *header_w = nc_create_header(system_monitor);
     nc_create_process_field_names();
     
-    WINDOW *process_info_w = newwin(system_monitor.process_count.total, COLS, 7, 1);
+    WINDOW *process_info_w = newpad(system_monitor.process_count.total + 1, COLS);
     keypad(process_info_w, TRUE);
 
     std::thread system_monitor_thread { system_monitor_update, std::ref(system_monitor), header_w, process_info_w};
-    int field_index = 0;
+
     while (1) {
-        int key; 
         getyx(process_info_w , input_curser_y, input_curser_x);
         key = wgetch(process_info_w);
 
         curser_lock.lock();
         switch (key) {
         case KEY_UP:
+            if (input_curser_y <= pad_y)
+                pad_y--;
             // Move up so clear current line highlighing
             mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
             wmove(process_info_w, --input_curser_y, input_curser_x);
             break;
-        case KEY_DOWN:
-            // Move down so clear current line highlighing
-            mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
-            wmove(process_info_w, ++input_curser_y, input_curser_x);
-            break;
+        case KEY_DOWN: {
+                /* Increament the pad when the curser goes past the screen size 
+                * Account for the screen size moveing up by pad_y */
+                int bottom_screen_boundary = LINES + pad_y - (START_OF_PROCESS_INFO_ROW + 1);
+                if (input_curser_y >= bottom_screen_boundary )
+                    pad_y++;
+                // Move down so clear current line highlighing
+                mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
+                wmove(process_info_w, ++input_curser_y, input_curser_x);
+                break;
+            }
         case KEY_RIGHT:
             field_index = nc_move_curser_to_next_field(process_info_w, field_index, input_curser_y);
             getyx(process_info_w , input_curser_y, input_curser_x);
@@ -221,7 +232,14 @@ int main() {
         default:
             break;
         }
-        wrefresh(process_info_w);
+
+        // Keey pad_y and input_curser_y positive
+        if (pad_y < 0 || input_curser_y < 0) {
+            pad_y = 0;
+            input_curser_y = 0;
+        }
+
+        prefresh(process_info_w, pad_y, 0, START_OF_PROCESS_INFO_ROW, 1, LINES -1, COLS - 1);
         curser_lock.unlock();
     }
 

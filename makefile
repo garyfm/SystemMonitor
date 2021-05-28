@@ -1,5 +1,5 @@
 SystemMonitor:
-	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp -lncurses
+	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp -lncurses -pthread
 
 clean:
 	rm SystemMonitor.elf
