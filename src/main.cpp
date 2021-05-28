@@ -103,7 +103,6 @@ static int nc_move_curser_to_previous_field(WINDOW *win, int field_index, const 
 static void nc_print_header_info(WINDOW *header_w, const SystemMonitor& system_monitor) {
     mvwprintw(header_w, 2, 1, "Uptime: %s Ideltime: %s", system_monitor.uptime.c_str(), system_monitor.idletime.c_str());
     mvwprintw(header_w, 3, 1, "Process Count:%d Running:%d Sleeping:%d Idle:%d Zombie: %d" ,  system_monitor.process_count.total, system_monitor.process_count.running, system_monitor.process_count.sleeping, system_monitor.process_count.idle, system_monitor.process_count.zombie);
-    mvwprintw(header_w, 4, 1, "Input Curser y:%d Pad y:%d", input_curser_y, pad_y); 
 }
 
 static void nc_print_process_info(WINDOW *process_info_w, Process& process, const int y_pos) {
@@ -211,8 +210,7 @@ int main() {
             mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
             wmove(process_info_w, --input_curser_y, input_curser_x);
             break;
-        case KEY_DOWN:
-            {
+        case KEY_DOWN: {
                 /* Increament the pad when the curser goes past the screen size 
                 * Account for the screen size moveing up by pad_y */
                 int bottom_screen_boundary = LINES + pad_y - (START_OF_PROCESS_INFO_ROW + 1);
