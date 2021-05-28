@@ -14,14 +14,15 @@
 #include <ncurses.h>
 
 #define NUM_FIELDS (10)
+#define START_OF_PROCESS_INFO_ROW (7)
 
 std::array<std::string, NUM_FIELDS> process_field_names = {"Name","Pid", "User", "State", "Threads", "Start Time", "CPU Time", "CPU load", "Mem Usage", "Command"};
 
 std::mutex curser_lock;
 
 static int field_spacing = 0;
-int input_curser_x, input_curser_y;
-int pad_y = 0;
+static int input_curser_x, input_curser_y;
+static int pad_y = 0;
 
 static char get_proc_running_state(const PROCESS_STATE state) {
     if (state == PROCESS_STATE::RUNNING) return 'R';
@@ -102,6 +103,7 @@ static int nc_move_curser_to_previous_field(WINDOW *win, int field_index, const 
 static void nc_print_header_info(WINDOW *header_w, const SystemMonitor& system_monitor) {
     mvwprintw(header_w, 2, 1, "Uptime: %s Ideltime: %s", system_monitor.uptime.c_str(), system_monitor.idletime.c_str());
     mvwprintw(header_w, 3, 1, "Process Count:%d Running:%d Sleeping:%d Idle:%d Zombie: %d" ,  system_monitor.process_count.total, system_monitor.process_count.running, system_monitor.process_count.sleeping, system_monitor.process_count.idle, system_monitor.process_count.zombie);
+    mvwprintw(header_w, 4, 1, "Input Curser y:%d Pad y:%d", input_curser_y, pad_y); 
 }
 
 static void nc_print_process_info(WINDOW *process_info_w, Process& process, const int y_pos) {
@@ -174,14 +176,15 @@ void system_monitor_update(SystemMonitor& system_monitor, WINDOW* header_w, WIND
         curser_lock.unlock();
 
         wrefresh(header_w);
-        prefresh(process_info_w, pad_y, 0, 7, 1, LINES -1, COLS - 1);
+        prefresh(process_info_w, pad_y, 0, START_OF_PROCESS_INFO_ROW, 1, LINES -1, COLS - 1);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
 int main() {
-    
+    int field_index = 0;
+    int key; 
     
     SystemMonitor system_monitor;
     
@@ -190,18 +193,16 @@ int main() {
     WINDOW *header_w = nc_create_header(system_monitor);
     nc_create_process_field_names();
     
-    WINDOW *process_info_w = newpad(system_monitor.process_count.total, COLS);
+    WINDOW *process_info_w = newpad(system_monitor.process_count.total + 1, COLS);
     keypad(process_info_w, TRUE);
 
     std::thread system_monitor_thread { system_monitor_update, std::ref(system_monitor), header_w, process_info_w};
 
-    int field_index = 0;
     while (1) {
-        int key; 
+        getyx(process_info_w , input_curser_y, input_curser_x);
         key = wgetch(process_info_w);
 
         curser_lock.lock();
-        getyx(process_info_w , input_curser_y, input_curser_x);
         switch (key) {
         case KEY_UP:
             if (input_curser_y <= pad_y)
@@ -211,12 +212,17 @@ int main() {
             wmove(process_info_w, --input_curser_y, input_curser_x);
             break;
         case KEY_DOWN:
-            if (input_curser_y >= LINES - 8)
-                pad_y++;
-            // Move down so clear current line highlighing
-            mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
-            wmove(process_info_w, ++input_curser_y, input_curser_x);
-            break;
+            {
+                /* Increament the pad when the curser goes past the screen size 
+                * Account for the screen size moveing up by pad_y */
+                int bottom_screen_boundary = LINES + pad_y - (START_OF_PROCESS_INFO_ROW + 1);
+                if (input_curser_y >= bottom_screen_boundary )
+                    pad_y++;
+                // Move down so clear current line highlighing
+                mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
+                wmove(process_info_w, ++input_curser_y, input_curser_x);
+                break;
+            }
         case KEY_RIGHT:
             field_index = nc_move_curser_to_next_field(process_info_w, field_index, input_curser_y);
             getyx(process_info_w , input_curser_y, input_curser_x);
@@ -229,7 +235,13 @@ int main() {
             break;
         }
 
-        prefresh(process_info_w, pad_y, 0, 7, 1, LINES -1, COLS - 1);
+        // Keey pad_y and input_curser_y positive
+        if (pad_y < 0 || input_curser_y < 0) {
+            pad_y = 0;
+            input_curser_y = 0;
+        }
+
+        prefresh(process_info_w, pad_y, 0, START_OF_PROCESS_INFO_ROW, 1, LINES -1, COLS - 1);
         curser_lock.unlock();
     }
 

@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed May 12 08:49:19 2021
+# Make data base, printed on Fri May 28 12:08:34 2021
 
 # Variables
 
@@ -34,8 +34,6 @@ XDG_SESSION_TYPE = x11
 VSCODE_LOG_NATIVE = false
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
-# environment
-IM_CONFIG_PHASE = 1
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -49,11 +47,13 @@ CURDIR := /home/gmojo/workspace/c++/SystemMonitor
 # makefile
 SHELL = /bin/sh
 # environment
-SNAP_DATA = /var/snap/code/64
+SNAP_DATA = /var/snap/code/65
+# environment
+VTE_VERSION = 6003
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-gb","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:58751
+JOURNAL_STREAM = 8:59665
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -65,7 +65,7 @@ MAKEFILE_LIST :=  makefile
 # automatic
 @F = $(notdir $@)
 # environment
-GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.desktop
+IM_CONFIG_PHASE = 1
 # environment
 USERNAME = gmojo
 # environment
@@ -77,9 +77,7 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-_ = /snap/code/64/usr/share/code/code
-# environment
-MANAGERPID = 1524
+MANAGERPID = 1468
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -87,25 +85,25 @@ LC_NAME = en_GB.UTF-8
 # environment
 VSCODE_CWD = /home/gmojo
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/64/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/65/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/gmojo/.cargo/bin:/home/gmojo/.local/bin:/home/gmojo/.cargo/bin:/home/gmojo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/gmojo/.cargo/bin:/home/gmojo/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/ubuntu:@/tmp/.ICE-unix/1743,unix/ubuntu:/tmp/.ICE-unix/1743
+SESSION_MANAGER = local/ubuntu:@/tmp/.ICE-unix/1679,unix/ubuntu:/tmp/.ICE-unix/1679
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/gmojo/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-SNAP = /snap/code/64
+SNAP = /snap/code/65
 # environment
 PY_WR = /home/mojo/workspace/python_workspace
 # environment
-SNAP_VERSION = e713fe9b
+SNAP_VERSION = 054a9295
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -115,19 +113,17 @@ DISABLE_WAYLAND = 1
 # environment
 VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"VSCode","submitURL":"appcenter://code?aid=fba07a4d-84bd-4fc8-a125-9640fc8ce171&uid=1de66e5f-e6e8-4d8e-8b0f-39ac70dba420&iid=1de66e5f-e6e8-4d8e-8b0f-39ac70dba420&sid=1de66e5f-e6e8-4d8e-8b0f-39ac70dba420","uploadToServer":true}
 # environment
-INVOCATION_ID = f4b077755ba5471e937d6948ce1868da
+INVOCATION_ID = 60b961e2c2704e99b44c2c3201bbaaab
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/64/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/65/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
-LS_COLORS = 
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
 # environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
-# environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 29040
 # automatic
 %F = $(notdir $%)
 # environment
@@ -143,7 +139,7 @@ PWD = /home/gmojo/workspace/c++/SystemMonitor
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1706
+SSH_AGENT_PID = 1644
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -180,6 +176,8 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 LC_TIME = en_GB.UTF-8
 # environment
 SNAP_REAL_HOME = /home/gmojo
+# environment
+COLORTERM = truecolor
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -187,19 +185,19 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
-SNAP_USER_DATA = /home/gmojo/snap/code/64
+SNAP_USER_DATA = /home/gmojo/snap/code/65
 # environment
 SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-028c97b4-b2e0-460e-83ca-536c8cee7a6c.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-f4f09947-ce88-4ef7-9777-5442ec5840f2.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = gmojo
 # environment
-SNAP_REVISION = 64
+SNAP_REVISION = 65
 # environment
 LC_MONETARY = en_GB.UTF-8
 # makefile
@@ -213,7 +211,7 @@ LC_TELEPHONE = en_GB.UTF-8
 # default
 MAKE_COMMAND := make
 # environment
-VSCODE_NODE_CACHED_DATA_DIR = /home/gmojo/.config/Code/CachedData/e713fe9b05fc24facbec8f34fb1017133858842b
+VSCODE_NODE_CACHED_DATA_DIR = /home/gmojo/.config/Code/CachedData/054a9295330880ed74ceaedda236253b4f39a335
 # default
 .VARIABLES := 
 # automatic
@@ -221,9 +219,7 @@ VSCODE_NODE_CACHED_DATA_DIR = /home/gmojo/.config/Code/CachedData/e713fe9b05fc24
 # environment
 LANGUAGE = en_GB:en
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-8f3affc1-1.56.1-main.sock
-# environment
-BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
+VSCODE_IPC_HOOK = /run/user/1000/vscode-8f3affc1-1.56.2-main.sock
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -264,8 +260,12 @@ EDITOR = vim
 LC_ALL = C
 # environment
 GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+# environment
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/610e642f_601b_4663_aa3d_abdf6e968ccd
 # automatic
 ^F = $(notdir $^)
+# environment
+GNOME_TERMINAL_SERVICE = :1.79
 # default
 SUFFIXES := 
 # environment
@@ -277,8 +277,8 @@ WINDOWPATH = 2
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
-GJS_DEBUG_OUTPUT = stderr
  
+GJS_DEBUG_OUTPUT = stderr
 # default
 .RECIPEPREFIX := 
 # environment
@@ -286,9 +286,11 @@ LC_ADDRESS = en_GB.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 29081
+TERM = xterm-256color
+# environment
+VSCODE_PID = 2137
 # variable set hash-table stats:
-# Load=137/1024=13%, Rehash=0, Collisions=27/162=17%
+# Load=138/1024=13%, Rehash=0, Collisions=24/163=15%
 
 # Pattern-specific Variable Values
 
@@ -296,9 +298,9 @@ VSCODE_PID = 29081
 
 # Directories
 
-# . (device 2053, inode 712834): 11 files, no impossibilities.
+# . (device 2053, inode 712834): 9 files, no impossibilities.
 
-# 11 files, no impossibilities in 1 directories.
+# 9 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -311,7 +313,7 @@ SystemMonitor:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'makefile', line 2):
-	g++ -g -std=c++17 -o SystemMonitor.elf  main.cpp Process.cpp  
+	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp -lncurses -pthread
 
 # Not a target:
 all:
@@ -323,7 +325,7 @@ all:
 # Not a target:
 makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-05-11 07:03:46.207973224
+#  Last modified 2021-05-27 06:20:46.347653756
 #  File has been updated.
 #  Successfully updated.
 
@@ -333,20 +335,36 @@ makefile:
 #  Modification time never checked.
 #  File has not been updated.
 
+run:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 9):
+	rm SystemMonitor.elf
+	g++ -g -std=c++17 -o SystemMonitor.elf  src/*.cpp -lncurses -pthread
+	./SystemMonitor.elf
+
+clean:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'makefile', line 5):
+	rm SystemMonitor.elf
+
 # files hash-table stats:
-# Load=5/1024=0%, Rehash=0, Collisions=0/15=0%
+# Load=7/1024=1%, Rehash=0, Collisions=0/17=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 17 / storage = 166 B / avg = 9 B
-# current buf: size = 8162 B / used = 166 B / count = 17 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 17 / storage = 149 B / avg = 8 B
+# current buf: size = 8162 B / used = 149 B / count = 17 / avg = 8 B
 
-# strcache performance: lookups = 22 / hit rate = 22%
+# strcache performance: lookups = 24 / hit rate = 29%
 # hash-table stats:
-# Load=17/8192=0%, Rehash=0, Collisions=1/22=5%
-# Finished Make data base on Wed May 12 08:49:19 2021
+# Load=17/8192=0%, Rehash=0, Collisions=1/24=4%
+# Finished Make data base on Fri May 28 12:08:34 2021
 
  
