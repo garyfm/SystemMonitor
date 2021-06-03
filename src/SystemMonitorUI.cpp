@@ -53,7 +53,7 @@ void SystemMonitorUI::create_process_field_names() {
     wrefresh(process_field_w);
 }
 
-int SystemMonitorUI::move_curser_to_next_field(WINDOW *win, int field_index, const int y_pos) {
+int SystemMonitorUI::move_curser_to_next_process_field(int field_index, const int y_pos) {
 
     int field_pos = 0;
 
@@ -67,25 +67,25 @@ int SystemMonitorUI::move_curser_to_next_field(WINDOW *win, int field_index, con
      * previous fields */
     field_pos += field_spacing * (field_index + 1);
 
-    wmove(win, y_pos, field_pos);
+    wmove(process_info_w, y_pos, field_pos);
     field_index++;
 
     return field_index;
 }
 
-int SystemMonitorUI::move_curser_to_previous_field(WINDOW *win, int field_index, const int y_pos) {
+int SystemMonitorUI::move_curser_to_previous_process_field(int field_index, const int y_pos) {
 
     int field_pos = 0;
     int current_x, current_y;
 
 
-    getyx(win, current_y, current_x);
+    getyx(process_info_w, current_y, current_x);
     
     field_pos = current_x;
     field_pos -= field_spacing;
     field_pos -= process_field_names[field_index-1].size();
 
-    wmove(win, y_pos, field_pos);
+    wmove(process_info_w, y_pos, field_pos);
 
     field_index--;
 
@@ -98,36 +98,36 @@ void SystemMonitorUI::print_header_info(const SystemMonitor& system_monitor) {
     mvwprintw(header_w, 4, 1, "Input Y: %d Pad Y: %d", input_curser_y, pad_y);
 }
 
-void SystemMonitorUI::print_process_info(WINDOW *process_info_w, Process& process, const int y_pos) {
+void SystemMonitorUI::print_process_info(Process& process, const int y_pos) {
     int field_index = 0;
 
     wprintw(process_info_w, process.name.second.c_str());
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%d", process.pid.second);
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%s", process.user.second.c_str());
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%c", get_proc_running_state(process.state.second));
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%d", process.num_of_threads.second);
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%d", process.start_time.second);
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%d", process.cpu_time.second);
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%d", process.cpu_load_avg.second);
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%d", process.mem_usage.second);
 
-    field_index = SystemMonitorUI::move_curser_to_next_field(process_info_w, field_index, y_pos);
+    field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index, y_pos);
     wprintw(process_info_w, "%s", process.command.second.c_str());
 }
 
@@ -136,7 +136,39 @@ void SystemMonitorUI::draw() {
     prefresh(process_info_w, pad_y, 0, START_OF_PROCESS_INFO_ROW, 1, LINES -1, COLS - 1);
 }
 
-void SystemMonitorUI::update_input_curser() {
+void SystemMonitorUI::key_down() {
+    /* Increament the pad when the curser goes past the screen size 
+    * Account for the screen size moveing up by ui.pad_y */
+    int bottom_screen_boundary = LINES + pad_y - (START_OF_PROCESS_INFO_ROW + 1);
+    if (input_curser_y >= bottom_screen_boundary )
+        pad_y++;
+    // Moving down so clear current line highlighing
+    mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
+    wmove(process_info_w, ++input_curser_y, input_curser_x);
+
+}
+
+void SystemMonitorUI::key_up() {
+    if(input_curser_y <= pad_y)
+        pad_y--;
+    // Moving up so clear current line highlighing
+    mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
+    wmove(process_info_w, --input_curser_y, input_curser_x);
+   
+    // Keep ui.pad_y and ui.input_curser_y positive
+    if (pad_y < 0 || input_curser_y < 0) {
+        pad_y = 0;
+        input_curser_y = 0;
+    }
+}
+
+void SystemMonitorUI::key_right() {
+    field_under_curser = move_curser_to_next_process_field(field_under_curser, input_curser_y);
+    getyx(process_info_w , input_curser_y, input_curser_x);
+}
+
+void SystemMonitorUI::key_left() {
+    field_under_curser = move_curser_to_previous_process_field(field_under_curser, input_curser_y);
     getyx(process_info_w , input_curser_y, input_curser_x);
 }
 
