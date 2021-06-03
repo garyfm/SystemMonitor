@@ -27,7 +27,7 @@ public:
     void key_right();
     void key_left();
     void print_header_info(const SystemMonitor& system_monitor);
-    void print_process_info(Process& process, const int y_pos);
+    void print_process_info(Process& process);
     void reposition_curser_to_input_curser();
     void highlight_row_under_input_curser(HIGHLIGHT_ROW set_unset);
 
@@ -39,8 +39,8 @@ private:
     
     WINDOW* create_header(const SystemMonitor& system_monitor);
     void create_process_field_names();
-    int move_curser_to_next_process_field(int field_index, const int y_pos);
-    int move_curser_to_previous_process_field(int field_index, const int y_pos);
+    int move_curser_to_next_process_field(int field_index);
+    int move_curser_to_previous_process_field(int field_index);
 };
 
 

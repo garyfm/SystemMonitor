@@ -16,11 +16,9 @@ void system_monitor_update(SystemMonitorUI& ui, SystemMonitor& system_monitor) {
 
         ui.curser_lock.lock();
         
-        wmove(ui.process_info_w, 0, 0);
         for (auto process : system_monitor.process_list) {
-            ui.print_process_info(process, y_pos);
-            y_pos++;
-            wmove(ui.process_info_w, y_pos, 0);
+            wmove(ui.process_info_w, y_pos++, 0);
+            ui.print_process_info(process);
         }
 
         ui.highlight_row_under_input_curser(HIGHLIGHT_ROW::SET);
