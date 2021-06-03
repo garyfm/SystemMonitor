@@ -50,7 +50,7 @@ void SystemMonitorUI::print_header_info(const SystemMonitor& system_monitor) {
     mvwprintw(header_w, 4, 1, "[DEBUG] Input X: %d, Input Y: %d Pad Y: %d", input_curser_x, input_curser_y, pad_y);
 }
 
-void SystemMonitorUI::print_process_info(Process& process) {
+void SystemMonitorUI::print_process_info(const Process& process) {
     int field_index = 0;
 
     wprintw(process_info_w, process.name.second.c_str());
@@ -90,7 +90,7 @@ void SystemMonitorUI::key_down() {
     if (input_curser_y >= bottom_screen_boundary )
         pad_y++;
     // FIXME: Done scroll past the last process
-    
+
     highlight_row_under_input_curser(HIGHLIGHT_ROW::UNSET);
     wmove(process_info_w, ++input_curser_y, input_curser_x);
     highlight_row_under_input_curser(HIGHLIGHT_ROW::SET);
@@ -129,7 +129,7 @@ void SystemMonitorUI::key_left() {
 void SystemMonitorUI::reposition_curser_to_input_curser() {
     wmove(process_info_w, input_curser_y, input_curser_x);
 }
-void SystemMonitorUI::highlight_row_under_input_curser(HIGHLIGHT_ROW set_unset) {
+void SystemMonitorUI::highlight_row_under_input_curser(const HIGHLIGHT_ROW set_unset) {
     if (set_unset == HIGHLIGHT_ROW::SET) {
         mvwchgat(process_info_w, input_curser_y, 0, -1, A_STANDOUT, 0, NULL);
     } else if (set_unset == HIGHLIGHT_ROW::UNSET) {
