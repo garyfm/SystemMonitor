@@ -2,6 +2,7 @@
 #define __SYSTEM_MONITOR_H__
 
 #include <string>
+#include <vector>
 
 #include "Process.h"
 
@@ -14,15 +15,8 @@ struct process_count_t {
 };
 
 class SystemMonitor {
-
 public:
-    SystemMonitor();
-    bool read();
-    void update();
-    void populate_process_list();
-    
-    void print();
-
+        
     std::string uptime;
     std::string idletime;
     std::string mem_usage;
@@ -32,8 +26,12 @@ public:
     int users_count;
     std::vector<Process> process_list;
 
-private:
+    SystemMonitor();
+    bool read();
+    void update();
+    void populate_process_list();
 
-    
+private:
 };
+
 #endif /* __SYSTEM_MONITOR_H__ */

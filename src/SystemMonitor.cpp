@@ -65,17 +65,3 @@ void SystemMonitor::populate_process_list () {
         }
     }
 }
-
-void SystemMonitor::print() {
-
-    std::cout << "\nSystem Montior\n";
-    std::cout << "Uptime:" << uptime << " Ideltime:" << idletime << "\n";
-    std::cout << "Process Count:" << process_count.total << " Running:" << process_count.running << " Sleeping:" << process_count.sleeping << " Idel:" << process_count.idle << " Zombie:" << process_count.zombie << "\n";
-    std::cout << "\n";
-
-    std::cout << "Name\t" << "Pid\t" << "User\t" << "State\t\t" << "Threads\t\t" << "Start Time\t" << "CPU Time\t" << "CPU load\t" << "Mem Usage\t" <<  "Command\t" << "\n";
-    
-    for (auto process : process_list) {
-            //process.print();
-    }
-}

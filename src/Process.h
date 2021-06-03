@@ -2,9 +2,6 @@
 #define __PROCESS_H__
 
 #include <string>
-#include <unordered_map>
-#include <utility>
-#include <chrono>
 #include <map>
 
 enum class PROCESS_FIELD {
@@ -40,13 +37,6 @@ enum class PROCESS_STATE {
 class Process {
 
 public:
-    Process(){};
-    Process(std::string process_path);
-
-    PROCESS_STATUS read();
-
-    void print();
-
     std::string process_path;
     std::pair<std::string, PROCESS_STATE> state;
     std::pair<std::string, int> pid;
@@ -59,6 +49,12 @@ public:
     std::pair<std::string, int> cpu_time;
     std::pair<std::string, int> start_time;
     std::pair<std::string, std::string> command;
+
+    Process(){};
+    Process(std::string process_path);
+
+    PROCESS_STATUS read();
+
 
 
 private:

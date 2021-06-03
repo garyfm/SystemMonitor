@@ -148,10 +148,3 @@ bool Process::parse_proc_sched() {
 
     return true;
 }
-
-
-
-
-void Process::print() {
-    //std::cout << name << "\t" << pid << "\t" << user << "\t" << state << "\t" << num_of_threads << "\t" << start_time << "\t" << cpu_time << "\t" << cpu_load_avg << "\t\t" << mem_usage << "\t" <<  command << "\t" << "\n";
-}
