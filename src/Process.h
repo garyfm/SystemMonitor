@@ -7,13 +7,6 @@
 #include <chrono>
 #include <map>
 
-enum class PROCESS_STATUS {
-    OK,
-    ERROR,
-    FAILED_TO_OPEN_FILE,
-    FAILED_TO_PARSE_FILE,
-};
-
 enum class PROCESS_FIELD {
     NAME,
     PID,
@@ -26,6 +19,15 @@ enum class PROCESS_FIELD {
     MEM_USAGE,
     COMMAND
 };
+
+enum class PROCESS_STATUS {
+    OK,
+    ERROR,
+    FAILED_TO_OPEN_FILE,
+    FAILED_TO_PARSE_FILE
+};
+
+
 
 enum class PROCESS_STATE {
     RUNNING,

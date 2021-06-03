@@ -1,5 +1,6 @@
 #ifndef __SYSTEM_MONITOR_H__
 #define __SYSTEM_MONITOR_H__
+
 #include <string>
 
 #include "Process.h"
