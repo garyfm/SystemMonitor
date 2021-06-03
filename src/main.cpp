@@ -1,10 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <string_view>
-#include <vector>
-#include <filesystem>
 #include <chrono>
 #include <thread>
 #include <mutex>
@@ -30,10 +23,9 @@ void system_monitor_update(SystemMonitorUI& ui, SystemMonitor& system_monitor) {
             wmove(ui.process_info_w, y_pos, 0);
         }
 
-        // Restore the curser to the input curser
-        wmove(ui.process_info_w, ui.input_curser_y, ui.input_curser_x);
-        // Highlight the current line under the input curser
-        mvwchgat(ui.process_info_w, ui.input_curser_y, 0, -1, A_STANDOUT, 0, NULL);
+        ui.highlight_row_under_input_curser(HIGHLIGHT_ROW::SET);
+        ui.reposition_curser_to_input_curser();
+        
         ui.curser_lock.unlock();
 
         ui.draw();
