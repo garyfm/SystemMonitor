@@ -33,7 +33,6 @@ void system_monitor_update(SystemMonitorUI& ui, SystemMonitor& system_monitor) {
 }
 
 int main() {
-    int field_index = 0;
     int key; 
     
     SystemMonitor system_monitor;
