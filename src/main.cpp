@@ -38,11 +38,12 @@ int main() {
         system_monitor.update();
         ui.print_header_info(system_monitor);
         
-        for (unsigned int y_pos = 0; y_pos < system_monitor.process_list.size(); y_pos++) {
+        for (auto& process: system_monitor.process_list) {
+            auto y_pos = &process - &system_monitor.process_list[0]; 
             wmove(ui.process_info_w, y_pos, 0);
-            ui.print_process_info(system_monitor.process_list[y_pos]);
+            ui.print_process_info(process);
         }
-
+        
         ui.highlight_row_under_input_curser(HIGHLIGHT_ROW::SET);
         ui.reposition_curser_to_input_curser();
         
