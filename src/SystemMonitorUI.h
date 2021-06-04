@@ -1,8 +1,6 @@
 #ifndef __SYSTEM_MONTOR_UI_H__
 #define __SYSTEM_MONTOR_UI_H__
 
-#include <mutex>
-
 #include "Process.h"
 #include "SystemMonitor.h"
 
@@ -15,8 +13,6 @@ enum class HIGHLIGHT_ROW {
 
 class SystemMonitorUI {
 public:
-    std::mutex curser_lock;
-    
     WINDOW *header_w;
     WINDOW *process_info_w;
 

@@ -37,6 +37,7 @@ void SystemMonitorUI::init(const SystemMonitor& system_monitor) {
     
     process_info_w = newpad(system_monitor.process_count.total + 1, COLS);
     keypad(process_info_w, TRUE);
+    nodelay(process_info_w, TRUE);
 }
 
 void SystemMonitorUI::draw() {

@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/SystemMonitor.elf",
+            "program": "${workspaceFolder}/build/SystemMonitor.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
