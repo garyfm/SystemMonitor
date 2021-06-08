@@ -10,11 +10,11 @@ enum class PROCESS_FIELD {
     UID,
     STATE,
     THREADS,
-    START_TIME,
     CPU_TIME,
     CPU_LOAD,
     MEM_USAGE,
-    COMMAND
+    COMMAND,
+    END
 };
 
 enum class PROCESS_STATUS {
@@ -23,8 +23,6 @@ enum class PROCESS_STATUS {
     FAILED_TO_OPEN_FILE,
     FAILED_TO_PARSE_FILE
 };
-
-
 
 enum class PROCESS_STATE {
     RUNNING,
@@ -47,7 +45,6 @@ public:
     std::pair<std::string, int> cpu_load_avg;
     std::pair<std::string, int> num_of_threads;
     std::pair<std::string, int> cpu_time;
-    std::pair<std::string, int> start_time;
     std::pair<std::string, std::string> command;
 
     Process(){};
