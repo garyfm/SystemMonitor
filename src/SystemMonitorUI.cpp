@@ -90,7 +90,7 @@ void SystemMonitorUI::key_down() {
     int bottom_screen_boundary = LINES + pad_y - (START_OF_PROCESS_INFO_ROW + 1);
     if (input_curser_y >= bottom_screen_boundary )
         pad_y++;
-    // FIXME: Done scroll past the last process
+    // FIXME: Dont scroll past the last process
 
     highlight_row_under_input_curser(HIGHLIGHT_ROW::UNSET);
     wmove(process_info_w, ++input_curser_y, input_curser_x);

@@ -1,6 +1,3 @@
-#include <chrono>
-#include <thread>
-
 #include "SystemMonitor.h"
 #include "SystemMonitorUI.h"
 

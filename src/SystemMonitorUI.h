@@ -13,7 +13,6 @@ enum class HIGHLIGHT_ROW {
 
 class SystemMonitorUI {
 public:
-    WINDOW *header_w;
     WINDOW *process_info_w;
 
     void init(const SystemMonitor& System_monitor);
@@ -28,6 +27,7 @@ public:
     void highlight_row_under_input_curser(const HIGHLIGHT_ROW set_unset);
 
 private:
+    WINDOW *header_w;
     int field_spacing = 0;
     int field_under_curser = 0;
     int input_curser_x = 0, input_curser_y = 0;
