@@ -11,18 +11,20 @@
 #define HEADER_SIZE (6 + 1)
 #define START_OF_PROCESS_INFO_ROW (HEADER_SIZE + 2)
 
-static std::array<std::string, (size_t) PROCESS_FIELD::END> process_field_names = {"Name","Pid", "User", "State", "Threads", "CPU Time (M:S)", "CPU load", "Memory (KB, %)", "Command"};
+static std::array<std::string, (size_t) PROCESS_FIELD::END> process_field_names = {"Name","Pid", "User", "State", "Threads", "CPU Time(M:S)", "CPU load", "Memory (KB, %)", "Command"};
 
-static std::string format_time(int time_ms) {
+static std::string format_time_ms(int time_ms) {
        float seconds = (float) time_ms / 1000;
        int minutes = (int) seconds / 60;
        seconds = fmod(seconds , 60);
 
        std::stringstream formatted_time_ss;
-       formatted_time_ss << std::to_string(minutes) << ":" << std::to_string(seconds);
+       formatted_time_ss << std::to_string(minutes) << ":" << std::setw(3) << std::to_string(seconds);
        std::string formatted_time = formatted_time_ss.str();
        return formatted_time;
 };
+
+
 
 void SystemMonitorUI::init(const SystemMonitor& system_monitor) {
     initscr();
@@ -52,7 +54,21 @@ void SystemMonitorUI::draw() {
 }
 
 void SystemMonitorUI::print_header_info(const SystemMonitor& system_monitor) {
-    mvwprintw(header_w, 2, 1, "Uptime(M:S) : %s Ideltime: %s", format_time(system_monitor.uptime).c_str(), format_time(system_monitor.idletime).c_str());
+    
+    auto format_uptime = [] (int time_s) {
+       int minutes = time_s / 60;
+       int hours = minutes / 60;
+
+       int seconds = time_s % 60;
+       minutes = minutes % 60;
+
+       std::stringstream formatted_time_ss;
+       formatted_time_ss << std::setw(2) << std::setfill('0') << std::to_string(hours)<< ":" << std::setw(2) << std::setfill('0') << std::to_string(minutes) << ":"  << std::setw(2) << std::setfill('0') << std::to_string(seconds);
+       std::string formatted_time = formatted_time_ss.str();
+       return formatted_time;
+    };
+    
+    mvwprintw(header_w, 2, 1, "Uptime: %s Ideltime: %s", format_uptime(system_monitor.uptime).c_str(), format_uptime(system_monitor.idletime).c_str());
 
     mvwprintw(header_w, 3, 1, "Process Count: %d Total, %d Running, %d Sleeping, %d Idle, %d Zombie" ,  system_monitor.process_count.total, system_monitor.process_count.running, system_monitor.process_count.sleeping, system_monitor.process_count.idle, system_monitor.process_count.zombie);
 
@@ -93,7 +109,7 @@ void SystemMonitorUI::print_process_info(const Process& process, const SystemMon
     wprintw(process_info_w, "%d", process.num_of_threads.second);
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%s", format_time(process.cpu_time.second).c_str());
+    wprintw(process_info_w, "%s", format_time_ms(process.cpu_time.second).c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
     wprintw(process_info_w, "%d", process.cpu_load_avg.second);
