@@ -41,7 +41,7 @@ public:
     std::pair<std::string, int> uid;
     std::pair<std::string, std::string> name;
     std::pair<std::string, std::string> user;
-    std::pair<std::string, int> mem_usage;
+    std::pair<std::string, int> memory_used;
     std::pair<std::string, int> cpu_load_avg;
     std::pair<std::string, int> num_of_threads;
     std::pair<std::string, int> cpu_time;

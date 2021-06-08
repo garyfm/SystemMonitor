@@ -71,7 +71,7 @@ bool Process::parse_proc_status() {
             cpu_load_avg = {key, std::stoi(value)};
             break;
         case PROCESS_FIELD::MEM_USAGE:
-            mem_usage = {key, std::stoi(value)};
+            memory_used = {key, std::stoi(value)};
             break;
         case PROCESS_FIELD::COMMAND:
             command = {key, value};
