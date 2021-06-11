@@ -16,12 +16,10 @@ enum class SYS_INFO_FIELDS {
 
 static std::map<std::string, SYS_INFO_FIELDS> system_info_fields = {{"MemTotal", SYS_INFO_FIELDS::MEM_TOTAL}, {"MemFree", SYS_INFO_FIELDS::MEM_FREE}, {"SwapTotal", SYS_INFO_FIELDS::MEM_SWAPED_TOTAL}, {"SwapFree", SYS_INFO_FIELDS::MEM_SWAPED_FREE}};
 
-SystemMonitor::SystemMonitor() {
+void SystemMonitor::init() {
     populate_process_list(); 
     read();
 }
-
-
 
 void SystemMonitor::update() {
     process_list.clear(); 
@@ -43,7 +41,9 @@ void SystemMonitor::populate_process_list () {
 bool SystemMonitor::read() {
 
     if (!parse_uptime()) return false;
-    if (!parse_mem_info()) return false;
+    if (!parse_meminfo()) return false;
+    if (!parse_loadavg()) return false;
+    if (!parse_stat()) return false;
     
     process_count.total = process_list.size();
     process_count.running = 0;
@@ -82,7 +82,7 @@ bool SystemMonitor::parse_uptime() {
     return true;
 }
 
-bool SystemMonitor::parse_mem_info() {
+bool SystemMonitor::parse_meminfo() {
     std::string key;
     std::string value;
         
@@ -118,6 +118,37 @@ bool SystemMonitor::parse_mem_info() {
     }
     physical_memory.used = physical_memory.total - physical_memory.free;
     swap_memory.used = swap_memory.total - swap_memory.free;
+
+    return true;
+}
+
+bool SystemMonitor::parse_loadavg() {
+    std::ifstream loadavg_file {"/proc/loadavg"};
+    if (!loadavg_file.is_open()) {
+        std::cout << "Failed to open /proc/loadavg\n";
+        return false;
+    }
+
+    std::getline(loadavg_file, loadavg);
+    return true;
+}
+
+bool SystemMonitor::parse_stat() {
+    std::string line {};
+    total_cpu_jiffies = 0;
+    
+    std::ifstream stat_file {"/proc/stat"};
+    if (!stat_file.is_open()) {
+        std::cout << "Failed to open /proc/stat\n";
+        return false;
+    }
+
+    std::getline(stat_file, line, ' '); 
+    std::getline(stat_file, line, ' '); 
+    while(line.find("\n") == std::string::npos) {
+        std::getline(stat_file, line, ' '); 
+        total_cpu_jiffies += stoi(line);
+    }
 
     return true;
 }

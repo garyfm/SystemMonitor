@@ -45,6 +45,8 @@ public:
     std::pair<std::string, int> cpu_load_avg;
     std::pair<std::string, int> num_of_threads;
     std::pair<std::string, int> cpu_time;
+    std::pair<std::string, int> ticks_running_on_cpu;
+    std::pair<std::string, int> starttime;
     std::pair<std::string, std::string> command;
 
     Process(){};
@@ -52,12 +54,11 @@ public:
 
     PROCESS_STATUS read();
 
-
-
 private:
     bool parse_proc_status(); 
     bool parse_proc_commandline(); 
     bool parse_proc_sched(); 
+    bool parse_proc_stat(); 
 };
 
 #endif /* __PROCESS_H__ */

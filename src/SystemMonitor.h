@@ -26,22 +26,27 @@ public:
     int uptime;
     int idletime;
     int users_count;
-    std::string load;
+    std::string loadavg;
+    int total_cpu_jiffies = 0;
+    const int kernal_frequency = 100;
 
     memory_t physical_memory;
     memory_t swap_memory;
     process_count_t process_count = {0};
 
+
     std::vector<Process> process_list;
 
-    SystemMonitor();
+    void init();
     void update();
 
 private:
     bool read();
     void populate_process_list();
     bool parse_uptime();
-    bool parse_mem_info();
+    bool parse_meminfo();
+    bool parse_loadavg();
+    bool parse_stat();
 };
 
 #endif /* __SYSTEM_MONITOR_H__ */

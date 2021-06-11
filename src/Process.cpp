@@ -2,6 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include <memory>
+#include <vector>
 
 #include <pwd.h>
 #include "Process.h"
@@ -17,6 +18,7 @@ PROCESS_STATUS Process::read() {
     if (!parse_proc_status()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
     if (!parse_proc_commandline()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
     if (!parse_proc_sched()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
+    if (!parse_proc_stat()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
     return PROCESS_STATUS::OK;
 }
 
@@ -63,9 +65,6 @@ bool Process::parse_proc_status() {
             break;
         case PROCESS_FIELD::THREADS:
             num_of_threads = {key, std::stoi(value)};
-            break;
-        case PROCESS_FIELD::CPU_TIME:
-            cpu_time = {key, std::stoi(value)};
             break;
         case PROCESS_FIELD::CPU_LOAD:
             cpu_load_avg = {key, std::stoi(value)};
@@ -132,6 +131,27 @@ bool Process::parse_proc_sched() {
         }
 
     }
+
+    return true;
+}
+
+bool Process::parse_proc_stat() {
+
+    std::string line;
+    std::vector<std::string> tokens;
+
+    std::ifstream stat_file {process_path + "/stat"};
+    if (!stat_file.is_open())
+        return false;
+    
+    while(std::getline(stat_file, line, ' ')) {
+        tokens.push_back(line);
+    }
+
+    int utime = std::stoi(tokens[13]);
+    int stime = std::stoi(tokens[14]);
+    starttime.second = std::stoi(tokens[21]);
+    ticks_running_on_cpu.second =  utime + stime;
 
     return true;
 }

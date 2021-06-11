@@ -11,7 +11,8 @@ int main() {
     
     SystemMonitor system_monitor;
     SystemMonitorUI ui;
-    
+
+    system_monitor.init(); 
     ui.init(system_monitor);
 
     while (1) {
@@ -48,7 +49,7 @@ int main() {
         ui.reposition_curser_to_input_curser();
         
         ui.draw();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     return 0;
