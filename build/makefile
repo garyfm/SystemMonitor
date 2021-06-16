@@ -16,7 +16,7 @@ SystemMonitor.o: Process.o $(SRC_DIR)/SystemMonitor.cpp $(SRC_DIR)/SystemMonitor
 SystemMonitorUI.o: $(SRC_DIR)/SystemMonitorUI.cpp $(SRC_DIR)/SystemMonitor.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/SystemMonitorUI.cpp
 
-Process.o: $(SRC_DIR)/Process.h
+Process.o: $(SRC_DIR)/Process.cpp $(SRC_DIR)/Process.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/Process.cpp
 
 clean:

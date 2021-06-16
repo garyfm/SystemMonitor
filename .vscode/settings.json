@@ -53,5 +53,8 @@
         "thread": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp"
-    }
+    },
+    "lldb.displayFormat": "auto",
+    "lldb.showDisassembly": "auto",
+    "lldb.dereferencePointers": true
 }

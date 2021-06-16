@@ -11,7 +11,8 @@ int main() {
     
     SystemMonitor system_monitor;
     SystemMonitorUI ui;
-    
+
+    system_monitor.init(); 
     ui.init(system_monitor);
 
     while (1) {
@@ -41,13 +42,14 @@ int main() {
         for (auto& process: system_monitor.process_list) {
             auto y_pos = &process - &system_monitor.process_list[0]; 
             wmove(ui.process_info_w, y_pos, 0);
-            ui.print_process_info(process);
+            ui.print_process_info(process, system_monitor);
         }
         
         ui.highlight_row_under_input_curser(HIGHLIGHT_ROW::SET);
         ui.reposition_curser_to_input_curser();
         
         ui.draw();
+        //std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     return 0;

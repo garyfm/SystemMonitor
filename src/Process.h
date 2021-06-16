@@ -10,11 +10,11 @@ enum class PROCESS_FIELD {
     UID,
     STATE,
     THREADS,
-    START_TIME,
     CPU_TIME,
     CPU_LOAD,
     MEM_USAGE,
-    COMMAND
+    COMMAND,
+    END
 };
 
 enum class PROCESS_STATUS {
@@ -23,8 +23,6 @@ enum class PROCESS_STATUS {
     FAILED_TO_OPEN_FILE,
     FAILED_TO_PARSE_FILE
 };
-
-
 
 enum class PROCESS_STATE {
     RUNNING,
@@ -37,30 +35,29 @@ enum class PROCESS_STATE {
 class Process {
 
 public:
+    int pid;
+    int uid;
+    int memory_used;
+    int cpu_load_avg;
+    int num_of_threads;
+    int cpu_time;
+    int ticks_running_on_cpu;
+    int starttime;
     std::string process_path;
-    std::pair<std::string, PROCESS_STATE> state;
-    std::pair<std::string, int> pid;
-    std::pair<std::string, int> uid;
-    std::pair<std::string, std::string> name;
-    std::pair<std::string, std::string> user;
-    std::pair<std::string, int> mem_usage;
-    std::pair<std::string, int> cpu_load_avg;
-    std::pair<std::string, int> num_of_threads;
-    std::pair<std::string, int> cpu_time;
-    std::pair<std::string, int> start_time;
-    std::pair<std::string, std::string> command;
+    std::string name;
+    std::string user;
+    std::string command;
+    PROCESS_STATE state;
 
     Process(){};
     Process(std::string process_path);
-
     PROCESS_STATUS read();
-
-
 
 private:
     bool parse_proc_status(); 
     bool parse_proc_commandline(); 
     bool parse_proc_sched(); 
+    bool parse_proc_stat(); 
 };
 
 #endif /* __PROCESS_H__ */
