@@ -8,7 +8,7 @@
 
 int main() {
     int key; 
-    
+    int sort_by = 0; 
     SystemMonitor system_monitor;
     SystemMonitorUI ui;
 
@@ -31,6 +31,13 @@ int main() {
             case KEY_LEFT:
                 ui.key_left();
                 break;
+            case KEY_F(1):
+                endwin();
+                return 0;
+                break;
+            case KEY_F(2):
+                sort_by++;
+                break;
             default:
                 break;
             }
@@ -38,7 +45,8 @@ int main() {
 
         system_monitor.update();
         ui.print_header_info(system_monitor);
-        
+        system_monitor.sort_process_list((PROCESS_FIELD) sort_by, SORT_ORDER::DESCENDING); 
+
         for (auto& process: system_monitor.process_list) {
             auto y_pos = &process - &system_monitor.process_list[0]; 
             wmove(ui.process_info_w, y_pos, 0);

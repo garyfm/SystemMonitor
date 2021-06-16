@@ -1,9 +1,9 @@
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <string>
-
 #include "SystemMonitor.h"
 
 enum class SYS_INFO_FIELDS {
@@ -58,6 +58,66 @@ double SystemMonitor::calc_process_memory_usage(const int memory_used) {
     return percentage_memory_used;
 }
 
+
+void SystemMonitor::sort_process_list(const PROCESS_FIELD sort_by, const SORT_ORDER order_by) {
+
+    // FIXME: Find a better way
+    switch (sort_by) {
+    case PROCESS_FIELD::NAME:
+        std::sort(process_list.begin(), process_list.end(),  [order_by](Process& a, Process&  b) { 
+            auto temp1 = a.name;
+            auto temp2 = b.name;
+            std::transform(temp1.begin(), temp1.end(), temp1.begin(), ::tolower);
+            std::transform(temp2.begin(), temp2.end(), temp2.begin(), ::tolower);
+            return ((bool)(temp1 < temp2) ^ (bool) order_by);
+        });
+        break;
+    case PROCESS_FIELD::PID:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.pid > b.pid;}); 
+        else
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.pid < b.pid;});
+        break;
+    case PROCESS_FIELD::UID:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.user > b.user;});
+        else
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.user < b.user;});
+        break;
+    case PROCESS_FIELD::STATE:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [](const Process& a, const Process& b){ return a.state > b.state;});
+        else
+            std::sort(process_list.begin(), process_list.end(), [](const Process& a, const Process& b){ return a.state < b.state;});
+        break;
+    case PROCESS_FIELD::THREADS:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.num_of_threads > b.num_of_threads;});
+        else
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.num_of_threads < b.num_of_threads;});
+        break;
+    case PROCESS_FIELD::CPU_TIME:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.cpu_time > b.cpu_time;});
+        else
+            std::sort(process_list.begin(), process_list.end(), [](Process& a, Process& b){ return a.cpu_time < b.cpu_time;});
+        break;
+    case PROCESS_FIELD::CPU_LOAD:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [this](Process& a, Process& b){ return this->calc_process_cpu_usage(a.starttime, a.ticks_running_on_cpu) > this->calc_process_cpu_usage(b.starttime, b.ticks_running_on_cpu);});
+        else
+            std::sort(process_list.begin(), process_list.end(), [this](Process& a, Process& b){ return this->calc_process_cpu_usage(a.starttime, a.ticks_running_on_cpu) < this->calc_process_cpu_usage(b.starttime, b.ticks_running_on_cpu);});
+        break;
+    case PROCESS_FIELD::MEM_USAGE:
+        if (order_by == SORT_ORDER::DESCENDING)
+            std::sort(process_list.begin(), process_list.end(), [this](Process& a, Process& b){ return this->calc_process_memory_usage(a.memory_used) > this->calc_process_memory_usage(b.memory_used);});
+        else
+            std::sort(process_list.begin(), process_list.end(), [this](Process& a, Process& b){ return this->calc_process_memory_usage(a.memory_used) < this->calc_process_memory_usage(b.memory_used);});
+        break;
+    default:
+        break;
+    }
+}
 bool SystemMonitor::read() {
 
     if (!parse_uptime()) return false;

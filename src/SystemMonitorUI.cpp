@@ -94,7 +94,7 @@ void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& 
         std::string formatted_time = formatted_time_ss.str();
         return formatted_time;
     };
-
+    wclrtoeol(process_info_w);
     wprintw(process_info_w, process.name.c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);

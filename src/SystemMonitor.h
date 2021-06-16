@@ -6,6 +6,11 @@
 
 #include "Process.h"
 
+enum class SORT_ORDER {
+    ASCENDING,
+    DESCENDING,
+};
+
 struct process_count_t {
     int total;
     int running;
@@ -41,6 +46,7 @@ public:
     void update();
     double calc_process_cpu_usage(const int starttime, const int ticks);
     double calc_process_memory_usage(const int memory_used);
+    void sort_process_list(const PROCESS_FIELD sort_by, const SORT_ORDER order_by);
 
 private:
     bool read();
