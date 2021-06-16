@@ -85,7 +85,7 @@ void SystemMonitorUI::print_header_info(const SystemMonitor& system_monitor) {
     //mvwprintw(header_w, 4, 1, "[DEBUG] Input X: %d, Input Y: %d Pad Y: %d", input_curser_x, input_curser_y, pad_y);
 }
 
-void SystemMonitorUI::print_process_info(const Process& process, const SystemMonitor& system_monitor) {
+void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& system_monitor) {
     int field_index = 0;
     
     auto process_running_state_to_char = [] (const PROCESS_STATE state) {
@@ -115,25 +115,11 @@ void SystemMonitorUI::print_process_info(const Process& process, const SystemMon
     wprintw(process_info_w, "%s", format_time_ms(process.cpu_time.second).c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    {
-        double percentage_cpu_usage = 0.0;
-        float total_elapsed_process_time = system_monitor.uptime - (process.starttime.second / system_monitor.kernal_frequency);
-        float seconds_running_on_cpu = process.ticks_running_on_cpu.second / system_monitor.kernal_frequency;
-
-        if (total_elapsed_process_time != 0) {
-            percentage_cpu_usage = 100 * (seconds_running_on_cpu / total_elapsed_process_time);
-        }
-        wprintw(process_info_w, "%.2f", percentage_cpu_usage);
-    }
+    wprintw(process_info_w, "%.2f", system_monitor.calc_process_cpu_usage(process.starttime.second, process.ticks_running_on_cpu.second));
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    {
-        float percentage_memory_used = 0.0;
-        if (process.memory_used.second != 0)
-            percentage_memory_used = ((float) process.memory_used.second / (float) system_monitor.physical_memory.total) * 100;
-
-        wprintw(process_info_w, "%d, %.2f", process.memory_used.second, percentage_memory_used);
-    }
+    wprintw(process_info_w, "%d, %.2f", process.memory_used.second, system_monitor.calc_process_memory_usage(process.memory_used.second));
+    
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
     wprintw(process_info_w, "%s", process.command.second.c_str());

@@ -22,7 +22,7 @@ public:
     void key_right();
     void key_left();
     void print_header_info(const SystemMonitor& system_monitor);
-    void print_process_info(const Process& process, const SystemMonitor& system_monitor);
+    void print_process_info(const Process& process, SystemMonitor& system_monitor);
     void reposition_curser_to_input_curser();
     void highlight_row_under_input_curser(const HIGHLIGHT_ROW set_unset);
 

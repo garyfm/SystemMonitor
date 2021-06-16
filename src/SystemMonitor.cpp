@@ -38,6 +38,26 @@ void SystemMonitor::populate_process_list () {
     }
 }
 
+double SystemMonitor::calc_process_cpu_usage(const int starttime, const int ticks) {
+    double percentage_cpu_usage = 0.0;
+    double total_elapsed_process_time = uptime - (starttime / kernal_frequency);
+    double seconds_running_on_cpu = ticks / kernal_frequency;
+
+    if (total_elapsed_process_time != 0) {
+        percentage_cpu_usage = 100 * (seconds_running_on_cpu / total_elapsed_process_time);
+    }
+
+    return percentage_cpu_usage;
+}
+
+double SystemMonitor::calc_process_memory_usage(const int memory_used) {
+    double percentage_memory_used = 0.0;
+    if (memory_used != 0)
+        percentage_memory_used = ((double) memory_used / (double) physical_memory.total) * 100;
+    
+    return percentage_memory_used;
+}
+
 bool SystemMonitor::read() {
 
     if (!parse_uptime()) return false;
