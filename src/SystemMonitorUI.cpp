@@ -15,19 +15,6 @@
 
 static std::array<std::string, (size_t) PROCESS_FIELD::END> process_field_names = {"Name","Pid", "User", "State", "Threads", "CPU Time(M:S)", "CPU Usage(%)", "Memory (KB, %)", "Command"};
 
-static std::string format_time_ms(int time_ms) {
-       float seconds = (float) time_ms / 1000;
-       int minutes = (int) seconds / 60;
-       seconds = fmod(seconds , 60);
-
-       std::stringstream formatted_time_ss;
-       formatted_time_ss << std::to_string(minutes) << ":" << std::setw(3) << std::to_string(seconds);
-       std::string formatted_time = formatted_time_ss.str();
-       return formatted_time;
-};
-
-
-
 void SystemMonitorUI::init(const SystemMonitor& system_monitor) {
     initscr();
     clear();
@@ -45,7 +32,7 @@ void SystemMonitorUI::init(const SystemMonitor& system_monitor) {
     header_w = create_header(system_monitor);
     create_process_field_names();
     
-    process_info_w = newpad(system_monitor.process_count.total + 1, COLS);
+    process_info_w = newpad(system_monitor.process_count.total + 1, COLS * 10); // times 10 here to account for command being long
     keypad(process_info_w, TRUE);
     nodelay(process_info_w, TRUE);
 }
@@ -97,6 +84,17 @@ void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& 
         return 'X'; // TODO: Better way of handling this 
     };
 
+    auto format_time_ms = [] (int time_ms) {
+        float seconds = (float) time_ms / 1000;
+        int minutes = (int) seconds / 60;
+        seconds = fmod(seconds , 60);
+
+        std::stringstream formatted_time_ss;
+        formatted_time_ss << std::to_string(minutes) << ":" << std::setw(3) << std::to_string(seconds);
+        std::string formatted_time = formatted_time_ss.str();
+        return formatted_time;
+    };
+
     wprintw(process_info_w, process.name.second.c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
@@ -120,7 +118,6 @@ void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
     wprintw(process_info_w, "%d, %.2f", process.memory_used.second, system_monitor.calc_process_memory_usage(process.memory_used.second));
     
-
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
     wprintw(process_info_w, "%s", process.command.second.c_str());
 }

@@ -49,9 +49,12 @@ bool Process::parse_proc_status() {
             continue;
 
         switch (process_info_fields[key]) {
-        case PROCESS_FIELD::NAME:
+        case PROCESS_FIELD::NAME: {
+            auto pos = std::find_if(value.begin(), value.end(), [](char c) { return !std::isalpha(c);});
+            value = value.substr(0, pos - value.begin());
             name = {key, value};
             break;
+        }
         case PROCESS_FIELD::PID:
             pid = {key, std::stoi(value)};
             break;
