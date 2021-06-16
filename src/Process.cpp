@@ -52,31 +52,31 @@ bool Process::parse_proc_status() {
         case PROCESS_FIELD::NAME: {
             auto pos = std::find_if(value.begin(), value.end(), [](char c) { return !std::isalpha(c);});
             value = value.substr(0, pos - value.begin());
-            name = {key, value};
+            name = value;
             break;
         }
         case PROCESS_FIELD::PID:
-            pid = {key, std::stoi(value)};
+            pid = std::stoi(value);
             break;
         case PROCESS_FIELD::UID: {
             struct passwd *pws = getpwuid(std::stoi(value));
-            user = {key, pws->pw_name};
+            user = pws->pw_name;
             break;
         }
         case PROCESS_FIELD::STATE:
-            state = {key, parse_proc_running_state(value)};
+            state = parse_proc_running_state(value);
             break;
         case PROCESS_FIELD::THREADS:
-            num_of_threads = {key, std::stoi(value)};
+            num_of_threads = std::stoi(value);
             break;
         case PROCESS_FIELD::CPU_LOAD:
-            cpu_load_avg = {key, std::stoi(value)};
+            cpu_load_avg = std::stoi(value);
             break;
         case PROCESS_FIELD::MEM_USAGE:
-            memory_used = {key, std::stoi(value)};
+            memory_used = std::stoi(value);
             break;
         case PROCESS_FIELD::COMMAND:
-            command = {key, value};
+            command = value;
             break;
         default:
             break;
@@ -96,7 +96,7 @@ bool Process::parse_proc_commandline() {
     getline(cmdline_file, line);
 
     std::replace(line.begin(), line.end(), '\000', ' ');
-    command = {"Command", line};
+    command = line;
 
     return true;
 }
@@ -124,10 +124,10 @@ bool Process::parse_proc_sched() {
 
         switch (process_info_fields[key]) {
         case PROCESS_FIELD::CPU_TIME:
-            cpu_time = {"CPU Time", std::stoi(value)};
+            cpu_time = std::stoi(value);
             break;
         case PROCESS_FIELD::CPU_LOAD:
-            cpu_load_avg = {"CPU Load", std::stoi(value)};
+            cpu_load_avg = std::stoi(value);
             break;
         default:
             break;
@@ -153,8 +153,8 @@ bool Process::parse_proc_stat() {
 
     int utime = std::stoi(tokens[13]);
     int stime = std::stoi(tokens[14]);
-    starttime.second = std::stoi(tokens[21]);
-    ticks_running_on_cpu.second =  utime + stime;
+    starttime= std::stoi(tokens[21]);
+    ticks_running_on_cpu =  utime + stime;
 
     return true;
 }

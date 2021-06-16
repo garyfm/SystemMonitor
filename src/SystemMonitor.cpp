@@ -72,14 +72,22 @@ bool SystemMonitor::read() {
     process_count.zombie = 0;
     
     for (auto &process : process_list) {
-        if (process.state.second == PROCESS_STATE::RUNNING)            
+        switch (process.state) {
+        case PROCESS_STATE::RUNNING:
             process_count.running++;
-        else if (process.state.second == PROCESS_STATE::SLEEPING)            
+            break;
+        case PROCESS_STATE::SLEEPING:
             process_count.sleeping++;
-        else if (process.state.second == PROCESS_STATE::IDLE)            
+            break;
+        case PROCESS_STATE::IDLE:
             process_count.idle++;
-        else if (process.state.second == PROCESS_STATE::ZOMBIE)             
+            break;
+        case PROCESS_STATE::ZOMBIE:
             process_count.zombie++;
+            break;
+        default:
+            break;
+        }
     }
     
     return true;

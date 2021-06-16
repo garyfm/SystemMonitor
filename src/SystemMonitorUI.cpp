@@ -32,7 +32,7 @@ void SystemMonitorUI::init(const SystemMonitor& system_monitor) {
     header_w = create_header(system_monitor);
     create_process_field_names();
     
-    process_info_w = newpad(system_monitor.process_count.total + 1, COLS * 10); // times 10 here to account for command being long
+    process_info_w = newpad(system_monitor.process_count.total + 1, COLS * 10); // times 10 here to account for command being large
     keypad(process_info_w, TRUE);
     nodelay(process_info_w, TRUE);
 }
@@ -67,8 +67,8 @@ void SystemMonitorUI::print_header_info(const SystemMonitor& system_monitor) {
         return megabytes;
     };
 
-    mvwprintw(header_w, 5, 1, "Memory(MB) : %.2f Total, %.2f Free, %.2f Used", bytes_to_megabytes(system_monitor.physical_memory.total), bytes_to_megabytes(system_monitor.physical_memory.free), bytes_to_megabytes(system_monitor.physical_memory.used));
-    mvwprintw(header_w, 6, 1, "Swap(MB) : %.2f Total, %.2f Free, %.2f Used", bytes_to_megabytes(system_monitor.swap_memory.total), bytes_to_megabytes(system_monitor.swap_memory.free), bytes_to_megabytes(system_monitor.swap_memory.used));
+    mvwprintw(header_w, 5, 1, "Memory(MB): %.2f Total, %.2f Free, %.2f Used", bytes_to_megabytes(system_monitor.physical_memory.total), bytes_to_megabytes(system_monitor.physical_memory.free), bytes_to_megabytes(system_monitor.physical_memory.used));
+    mvwprintw(header_w, 6, 1, "Swap(MB): %.2f Total, %.2f Free, %.2f Used", bytes_to_megabytes(system_monitor.swap_memory.total), bytes_to_megabytes(system_monitor.swap_memory.free), bytes_to_megabytes(system_monitor.swap_memory.used));
     //mvwprintw(header_w, 4, 1, "[DEBUG] Input X: %d, Input Y: %d Pad Y: %d", input_curser_x, input_curser_y, pad_y);
 }
 
@@ -95,31 +95,31 @@ void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& 
         return formatted_time;
     };
 
-    wprintw(process_info_w, process.name.second.c_str());
+    wprintw(process_info_w, process.name.c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%d", process.pid.second);
+    wprintw(process_info_w, "%d", process.pid);
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%s", process.user.second.c_str());
+    wprintw(process_info_w, "%s", process.user.c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%c", process_running_state_to_char(process.state.second));
+    wprintw(process_info_w, "%c", process_running_state_to_char(process.state));
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%d", process.num_of_threads.second);
+    wprintw(process_info_w, "%d", process.num_of_threads);
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%s", format_time_ms(process.cpu_time.second).c_str());
+    wprintw(process_info_w, "%s", format_time_ms(process.cpu_time).c_str());
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%.2f", system_monitor.calc_process_cpu_usage(process.starttime.second, process.ticks_running_on_cpu.second));
+    wprintw(process_info_w, "%.2f", system_monitor.calc_process_cpu_usage(process.starttime, process.ticks_running_on_cpu));
 
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%d, %.2f", process.memory_used.second, system_monitor.calc_process_memory_usage(process.memory_used.second));
+    wprintw(process_info_w, "%d, %.2f", process.memory_used, system_monitor.calc_process_memory_usage(process.memory_used));
     
     field_index = SystemMonitorUI::move_curser_to_next_process_field(field_index);
-    wprintw(process_info_w, "%s", process.command.second.c_str());
+    wprintw(process_info_w, "%s", process.command.c_str());
 }
 
 void SystemMonitorUI::key_down() {
