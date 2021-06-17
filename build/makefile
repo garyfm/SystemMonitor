@@ -13,7 +13,7 @@ main.o: $(SRC_DIR)/main.cpp $(SRC_DIR)/SystemMonitor.h $(SRC_DIR)/SystemMonitorU
 SystemMonitor.o: Process.o $(SRC_DIR)/SystemMonitor.cpp $(SRC_DIR)/SystemMonitor.h $(SRC_DIR)/Process.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/SystemMonitor.cpp
 	
-SystemMonitorUI.o: $(SRC_DIR)/SystemMonitorUI.cpp $(SRC_DIR)/SystemMonitor.h
+SystemMonitorUI.o: $(SRC_DIR)/SystemMonitorUI.cpp $(SRC_DIR)/SystemMonitorUI.h $(SRC_DIR)/SystemMonitor.h
 	$(CC) $(CFLAGS) -c $(SRC_DIR)/SystemMonitorUI.cpp
 
 Process.o: $(SRC_DIR)/Process.cpp $(SRC_DIR)/Process.h
