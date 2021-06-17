@@ -28,6 +28,7 @@ public:
     void sort_by_current_col(SystemMonitor& system_monitor);
     void update_sort_to_current_col();
     void kill_process_under_curser(SystemMonitor& system_monitor);
+    void stop_resume_process_under_curser(SystemMonitor& system_monitor);
     
 private:
     WINDOW *header_w;

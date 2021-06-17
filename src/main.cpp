@@ -38,6 +38,9 @@ int main() {
             case KEY_F(2):
                 ui.update_sort_to_current_col();
                 break;
+            case KEY_F(3):
+                ui.stop_resume_process_under_curser(system_monitor);
+                break;
             case KEY_F(4):
                 ui.kill_process_under_curser(system_monitor);
                 break;

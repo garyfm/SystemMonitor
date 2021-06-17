@@ -27,6 +27,13 @@ void Process::kill_process() {
     kill(pid, SIGKILL);
 }
 
+void Process::stop_resume_process() {
+    if (state == PROCESS_STATE::RUNNING)
+        kill(pid, SIGTSTP);
+    else if (state == PROCESS_STATE::STOPPED)
+        kill(pid, SIGCONT);
+}
+
 bool Process::parse_proc_status() {
     std::string key;
     std::string value;
@@ -36,6 +43,7 @@ bool Process::parse_proc_status() {
         else if (raw_state_string == "I (idle)") return PROCESS_STATE::IDLE;
         else if (raw_state_string == "S (sleeping)") return PROCESS_STATE::SLEEPING;
         else if (raw_state_string == "Z (zombie)") return PROCESS_STATE::ZOMBIE;
+        else if (raw_state_string == "T (stopped)") return PROCESS_STATE::STOPPED;
         return PROCESS_STATE::END;
     };
     
