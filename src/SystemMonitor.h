@@ -42,7 +42,6 @@ public:
 
     std::vector<Process> process_list;
 
-    void init();
     void update();
     double calc_process_cpu_usage(const int starttime, const int ticks);
     double calc_process_memory_usage(const int memory_used);

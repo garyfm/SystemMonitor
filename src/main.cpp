@@ -8,14 +8,15 @@
 
 int main() {
     int key; 
-    int sort_by = 0; 
     SystemMonitor system_monitor;
     SystemMonitorUI ui;
 
-    system_monitor.init(); 
+    system_monitor.update();
     ui.init(system_monitor);
 
     while (1) {
+        system_monitor.update();
+        
         key = wgetch(ui.process_info_w); 
         if (key != ERR) {
             switch (key) {
@@ -36,16 +37,15 @@ int main() {
                 return 0;
                 break;
             case KEY_F(2):
-                sort_by++;
+                ui.update_sort_to_current_col();
                 break;
             default:
                 break;
             }
         }
 
-        system_monitor.update();
+        ui.sort_by_current_col(system_monitor);
         ui.print_header_info(system_monitor);
-        system_monitor.sort_process_list((PROCESS_FIELD) sort_by, SORT_ORDER::DESCENDING); 
 
         for (auto& process: system_monitor.process_list) {
             auto y_pos = &process - &system_monitor.process_list[0]; 

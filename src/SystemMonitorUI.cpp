@@ -154,6 +154,7 @@ void SystemMonitorUI::key_up() {
 void SystemMonitorUI::key_right() {
     field_under_curser = move_curser_to_next_process_field(field_under_curser);
     getyx(process_info_w , input_curser_y, input_curser_x);
+    proces_field_under_curser = static_cast<PROCESS_FIELD>(static_cast<int>(proces_field_under_curser) + 1);
     //FIXME: Ensure it doesnt go past the screen size
     //FIXME: Allow screen panning to the right
 }
@@ -161,6 +162,7 @@ void SystemMonitorUI::key_right() {
 void SystemMonitorUI::key_left() {
     field_under_curser = move_curser_to_previous_process_field(field_under_curser);
     getyx(process_info_w , input_curser_y, input_curser_x);
+    proces_field_under_curser = static_cast<PROCESS_FIELD>(static_cast<int>(proces_field_under_curser) - 1);
     //FIXME: Ensure it doesnt go past the screen size
     //FIXME: Allow screen panning back to the left
 }
@@ -174,6 +176,17 @@ void SystemMonitorUI::highlight_row_under_input_curser(const HIGHLIGHT_ROW set_u
     } else if (set_unset == HIGHLIGHT_ROW::UNSET) {
         mvwchgat(process_info_w, input_curser_y, 0, -1, A_NORMAL, 0, NULL);
     }
+}
+
+void SystemMonitorUI::update_sort_to_current_col() {
+    if (sort_by == proces_field_under_curser)
+        order_by = !order_by;
+    else
+        sort_by = proces_field_under_curser;
+}
+
+void SystemMonitorUI::sort_by_current_col(SystemMonitor& system_monitor) {
+    system_monitor.sort_process_list(sort_by, static_cast<SORT_ORDER>(order_by)); 
 }
 
 WINDOW* SystemMonitorUI::create_header(const SystemMonitor& system_monitor) {

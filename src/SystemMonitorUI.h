@@ -25,13 +25,18 @@ public:
     void print_process_info(const Process& process, SystemMonitor& system_monitor);
     void reposition_curser_to_input_curser();
     void highlight_row_under_input_curser(const HIGHLIGHT_ROW set_unset);
-
+    void sort_by_current_col(SystemMonitor& system_monitor);
+    void update_sort_to_current_col();
+    
 private:
     WINDOW *header_w;
     int field_spacing = 0;
     int field_under_curser = 0;
     int input_curser_x = 0, input_curser_y = 0;
     int pad_y = 0;
+    PROCESS_FIELD proces_field_under_curser = PROCESS_FIELD::NAME;
+    PROCESS_FIELD sort_by;
+    bool order_by = false;
     
     WINDOW* create_header(const SystemMonitor& system_monitor);
     void create_process_field_names();

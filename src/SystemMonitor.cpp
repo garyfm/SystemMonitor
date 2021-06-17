@@ -16,11 +16,6 @@ enum class SYS_INFO_FIELDS {
 
 static std::map<std::string, SYS_INFO_FIELDS> system_info_fields = {{"MemTotal", SYS_INFO_FIELDS::MEM_TOTAL}, {"MemFree", SYS_INFO_FIELDS::MEM_FREE}, {"SwapTotal", SYS_INFO_FIELDS::MEM_SWAPED_TOTAL}, {"SwapFree", SYS_INFO_FIELDS::MEM_SWAPED_FREE}};
 
-void SystemMonitor::init() {
-    populate_process_list(); 
-    read();
-}
-
 void SystemMonitor::update() {
     process_list.clear(); 
     populate_process_list(); 
@@ -61,7 +56,7 @@ double SystemMonitor::calc_process_memory_usage(const int memory_used) {
 
 void SystemMonitor::sort_process_list(const PROCESS_FIELD sort_by, const SORT_ORDER order_by) {
 
-    // FIXME: Find a better way
+    // FIX: This is messy. Refactor.
     switch (sort_by) {
     case PROCESS_FIELD::NAME:
         std::sort(process_list.begin(), process_list.end(),  [order_by](Process& a, Process&  b) { 
