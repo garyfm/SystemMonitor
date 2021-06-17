@@ -52,6 +52,7 @@ public:
     Process(){};
     Process(std::string process_path);
     PROCESS_STATUS read();
+    void kill_process();
 
 private:
     bool parse_proc_status(); 

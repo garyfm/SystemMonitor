@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <pwd.h>
+#include <signal.h>
 #include "Process.h"
 
 static std::map<std::string, PROCESS_FIELD> process_info_fields = {{"Name", PROCESS_FIELD::NAME}, {"Pid", PROCESS_FIELD::PID}, {"Uid", PROCESS_FIELD::UID}, {"State", PROCESS_FIELD::STATE}, {"Threads", PROCESS_FIELD::THREADS}, {"se.sum_exec_runtime", PROCESS_FIELD::CPU_TIME}, {"se.avg.runnable_avg", PROCESS_FIELD::CPU_LOAD}, {"VmRSS", PROCESS_FIELD::MEM_USAGE}, {"Command", PROCESS_FIELD::COMMAND}};
@@ -20,6 +21,10 @@ PROCESS_STATUS Process::read() {
     if (!parse_proc_sched()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
     if (!parse_proc_stat()) return PROCESS_STATUS::FAILED_TO_PARSE_FILE;
     return PROCESS_STATUS::OK;
+}
+
+void Process::kill_process() {
+    kill(pid, SIGKILL);
 }
 
 bool Process::parse_proc_status() {

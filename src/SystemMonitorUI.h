@@ -27,6 +27,7 @@ public:
     void highlight_row_under_input_curser(const HIGHLIGHT_ROW set_unset);
     void sort_by_current_col(SystemMonitor& system_monitor);
     void update_sort_to_current_col();
+    void kill_process_under_curser(SystemMonitor& system_monitor);
     
 private:
     WINDOW *header_w;
