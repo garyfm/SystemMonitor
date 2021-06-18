@@ -29,6 +29,7 @@ enum class PROCESS_STATE {
     IDLE,
     SLEEPING,
     ZOMBIE,
+    STOPPED,
     END,
 };
 
@@ -49,9 +50,13 @@ public:
     std::string command;
     PROCESS_STATE state;
 
+    bool operator==(const Process& rhs);
+
     Process(){};
     Process(std::string process_path);
     PROCESS_STATUS read();
+    void kill_process();
+    void stop_resume_process();
 
 private:
     bool parse_proc_status(); 

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <pwd.h>
+#include <signal.h>
 #include "Process.h"
 
 static std::map<std::string, PROCESS_FIELD> process_info_fields = {{"Name", PROCESS_FIELD::NAME}, {"Pid", PROCESS_FIELD::PID}, {"Uid", PROCESS_FIELD::UID}, {"State", PROCESS_FIELD::STATE}, {"Threads", PROCESS_FIELD::THREADS}, {"se.sum_exec_runtime", PROCESS_FIELD::CPU_TIME}, {"se.avg.runnable_avg", PROCESS_FIELD::CPU_LOAD}, {"VmRSS", PROCESS_FIELD::MEM_USAGE}, {"Command", PROCESS_FIELD::COMMAND}};
@@ -22,6 +23,21 @@ PROCESS_STATUS Process::read() {
     return PROCESS_STATUS::OK;
 }
 
+bool Process::operator==(const Process& rhs) {
+    return pid == rhs.pid;
+}
+
+void Process::kill_process() {
+    kill(pid, SIGKILL);
+}
+
+void Process::stop_resume_process() {
+    if (state == PROCESS_STATE::RUNNING)
+        kill(pid, SIGTSTP);
+    else if (state == PROCESS_STATE::STOPPED)
+        kill(pid, SIGCONT);
+}
+
 bool Process::parse_proc_status() {
     std::string key;
     std::string value;
@@ -31,6 +47,7 @@ bool Process::parse_proc_status() {
         else if (raw_state_string == "I (idle)") return PROCESS_STATE::IDLE;
         else if (raw_state_string == "S (sleeping)") return PROCESS_STATE::SLEEPING;
         else if (raw_state_string == "Z (zombie)") return PROCESS_STATE::ZOMBIE;
+        else if (raw_state_string == "T (stopped)") return PROCESS_STATE::STOPPED;
         return PROCESS_STATE::END;
     };
     

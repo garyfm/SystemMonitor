@@ -69,9 +69,11 @@ void SystemMonitorUI::print_header_info(const SystemMonitor& system_monitor) {
 
     mvwprintw(header_w, 5, 1, "Memory(MB): %.2f Total, %.2f Free, %.2f Used", bytes_to_megabytes(system_monitor.physical_memory.total), bytes_to_megabytes(system_monitor.physical_memory.free), bytes_to_megabytes(system_monitor.physical_memory.used));
     mvwprintw(header_w, 6, 1, "Swap(MB): %.2f Total, %.2f Free, %.2f Used", bytes_to_megabytes(system_monitor.swap_memory.total), bytes_to_megabytes(system_monitor.swap_memory.free), bytes_to_megabytes(system_monitor.swap_memory.used));
-    //mvwprintw(header_w, 4, 1, "[DEBUG] Input X: %d, Input Y: %d Pad Y: %d", input_curser_x, input_curser_y, pad_y);
+    //mvwprintw(header_w, 7, 1, "[DEBUG] Input X: %d, Input Y: %d Pad Y: %d", input_curser_x, input_curser_y, pad_y);
     mvwprintw(header_w, 2, COLS - 40 , "F1 - Exit");
     mvwprintw(header_w, 3, COLS - 40, "F2 - Sort Ascending/Descending");
+    mvwprintw(header_w, 4, COLS - 40, "F3 - Stop/Resume Process");
+    mvwprintw(header_w, 5, COLS - 40, "F4 - Kill Process");
 }
 
 void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& system_monitor) {
@@ -82,6 +84,7 @@ void SystemMonitorUI::print_process_info(const Process& process, SystemMonitor& 
         else if (state == PROCESS_STATE::IDLE) return 'I';
         else if (state == PROCESS_STATE::SLEEPING) return 'S';
         else if (state == PROCESS_STATE::ZOMBIE) return 'Z';
+        else if (state == PROCESS_STATE::STOPPED) return 'T';
 
         return 'X'; // TODO: Better way of handling this 
     };
@@ -189,6 +192,16 @@ void SystemMonitorUI::update_sort_to_current_col() {
 
 void SystemMonitorUI::sort_by_current_col(SystemMonitor& system_monitor) {
     system_monitor.sort_process_list(sort_by, static_cast<SORT_ORDER>(order_by)); 
+}
+
+void SystemMonitorUI::kill_process_under_curser(SystemMonitor& system_monitor) {
+    int process_under_curser = input_curser_y;
+    system_monitor.process_list[process_under_curser].kill_process();
+}
+
+void SystemMonitorUI::stop_resume_process_under_curser(SystemMonitor& system_monitor) {
+    int process_under_curser = input_curser_y;
+    system_monitor.process_list[process_under_curser].stop_resume_process();
 }
 
 WINDOW* SystemMonitorUI::create_header(const SystemMonitor& system_monitor) {

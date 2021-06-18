@@ -15,7 +15,6 @@ int main() {
     ui.init(system_monitor);
 
     while (1) {
-        system_monitor.update();
         
         key = wgetch(ui.process_info_w); 
         if (key != ERR) {
@@ -39,11 +38,18 @@ int main() {
             case KEY_F(2):
                 ui.update_sort_to_current_col();
                 break;
+            case KEY_F(3):
+                ui.stop_resume_process_under_curser(system_monitor);
+                break;
+            case KEY_F(4):
+                ui.kill_process_under_curser(system_monitor);
+                break;
             default:
                 break;
             }
         }
 
+        system_monitor.update();
         ui.sort_by_current_col(system_monitor);
         ui.print_header_info(system_monitor);
 

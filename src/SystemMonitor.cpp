@@ -112,6 +112,7 @@ void SystemMonitor::sort_process_list(const PROCESS_FIELD sort_by, const SORT_OR
     default:
         break;
     }
+    process_list.erase(std::unique(process_list.begin(), process_list.end()), process_list.end());
 }
 bool SystemMonitor::read() {
 
