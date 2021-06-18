@@ -50,6 +50,8 @@ public:
     std::string command;
     PROCESS_STATE state;
 
+    bool operator==(const Process& rhs);
+
     Process(){};
     Process(std::string process_path);
     PROCESS_STATUS read();

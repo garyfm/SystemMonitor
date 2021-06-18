@@ -23,6 +23,10 @@ PROCESS_STATUS Process::read() {
     return PROCESS_STATUS::OK;
 }
 
+bool Process::operator==(const Process& rhs) {
+    return pid == rhs.pid;
+}
+
 void Process::kill_process() {
     kill(pid, SIGKILL);
 }
